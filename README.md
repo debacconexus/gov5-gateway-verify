@@ -108,7 +108,7 @@ This is the Gateway alone. DeBacco Nexus's other systems are not in this reposit
 
 ## Tell us what you find
 
-Email **info@debacconexus.com**, or open an issue on this repository. Please include what you ran, what you expected, and what happened. We will answer, and we will fix what is wrong.
+Email **jdebacco@debacconexus.ai**, or open an issue on this repository. Please include what you ran, what you expected, and what happened. We will answer, and we will fix what is wrong.
 
 ---
 

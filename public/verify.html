@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Receipt Check | DeBacco Nexus</title>
+<link rel="icon" href="/dn-mark.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rubik:wght@700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+/* Light on purpose: a scanned receipt is read on a phone, often outdoors */
+:root{--bg:#F6F8F9;--panel:#FFFFFF;--line:#DDE6E8;--ink:#0E1A1C;--muted:#53646A;--teal:#0C8A96;--zircon:#4CD8E0;--ok:#1F8A4C;--okSoft:#E2F3E9;--bad:#B4332B;--badSoft:#FBE5E3;--amber:#9A6400;--amberSoft:#FBF0DA;--slate:#5A6B72;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left))}
+header{display:flex;justify-content:center;padding:6px 0 18px}
+header img{height:46px}
+.hero{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;text-align:center;box-shadow:0 1px 2px rgba(14,26,28,.05),0 8px 24px rgba(14,26,28,.06)}
+.hero img.seal{width:128px;height:128px}
+.hero img.seal.off{filter:grayscale(1);opacity:.45}
+.state{font-family:Rubik,Inter,sans-serif;font-weight:800;font-size:24px;margin:10px 0 4px}
+.state.ok{color:var(--teal)} .state.bad{color:var(--slate)}
+.sub{color:var(--muted);margin:0}
+.checks{display:flex;flex-direction:column;gap:6px;margin:16px 0 0;text-align:left}
+.ck{display:flex;gap:10px;align-items:center;border-radius:10px;padding:9px 12px;font-weight:600;font-size:14px}
+.ck.y{background:var(--okSoft);color:var(--ok)} .ck.n{background:var(--badSoft);color:var(--bad)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-top:14px;overflow:hidden}
+.panel h2{font-size:14px;margin:0;padding:12px 16px;border-bottom:1px solid var(--line)}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;padding:12px 16px}
+.kv div:nth-child(odd){color:var(--muted);font-size:13px;font-weight:600}
+.kv div{min-width:0;word-break:break-word}
+.mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 16px}
+.c{border:1px solid var(--line);border-top:3px solid var(--ok);border-radius:10px;padding:10px 12px}
+.c b{display:block;font-size:19px} .c span{font-size:12px;color:var(--muted);font-weight:600}
+.v{display:inline-block;border-radius:6px;padding:2px 8px;font-size:12.5px;font-weight:700}
+.v.ok{background:var(--okSoft);color:var(--ok)} .v.bad{background:var(--badSoft);color:var(--bad)} .v.amb{background:var(--amberSoft);color:var(--amber)}
+table{width:100%;border-collapse:collapse}
+td{padding:8px 16px;border-top:1px solid var(--line);font-size:13.5px;vertical-align:top}
+.note{font-size:12.5px;color:var(--muted);padding:10px 16px;margin:0}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:22px}
+a{color:var(--teal)}
+@media (max-width:480px){.kv{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="/dn-lockup.png" alt="DeBacco Nexus: AI for People and Planet"></header>
+  <div id="out"><div class="hero"><p class="sub">Checking this receipt…</p></div></div>
+  <footer>Governedware&trade; &middot; Patent pending, U.S. 19/571,156<br>We don't say trust us. We say verify with us.</footer>
+</div>
+<script>
+(function(){
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sig = n => { n = Number(n || 0); if (!n) return '0'; const a = Math.abs(n); return a >= 100 ? Math.round(n).toLocaleString() : a >= 1 ? n.toFixed(2) : n.toPrecision(2); };
+const pt = s => { try { return new Date(s).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', dateStyle: 'medium', timeStyle: 'short' }) + ' Pacific'; } catch (e) { return s; } };
+const VERDICT = { CERTIFIED: ['Certified', 'ok', 'Passed every check and was forwarded to the model.'], NO: ['Blocked', 'bad', 'Stopped before the model. No model ran.'], WAIT: ['Held for review', 'amb', 'Stopped before the model for a person to review.'], GO: ['Approved by a person', 'ok', 'A reviewer approved a held request. No model ran for this decision.'] };
+const parts = location.pathname.split('/').filter(Boolean);
+fetch('/r/' + encodeURIComponent(parts[1] || '') + '/' + encodeURIComponent(parts[2] || '') + '/data').then(r => r.json()).then(d => {
+  const out = document.getElementById('out');
+  if (!d.found) {
+    out.innerHTML = '<div class="hero"><img class="seal off" src="/gov5-qr-seal.png" alt=""><div class="state bad">Not verified</div><p class="sub">' + esc(d.message || 'No receipt matches this code.') + '</p></div>';
+    return;
+  }
+  const v = d.verification, good = v.valid, vd = VERDICT[d.verdict] || [d.verdict, 'amb', ''], e = d.ecos || {}, g = e.governed || {};
+  const ck = (b, t) => '<div class="ck ' + (b ? 'y' : 'n') + '">' + (b ? '&#10003;' : '&#10007;') + ' ' + t + '</div>';
+  out.innerHTML =
+    '<div class="hero"><img class="seal' + (good ? '' : ' off') + '" src="/gov5-qr-seal.png" alt="Gov5 governed seal">' +
+      '<div class="state ' + (good ? 'ok' : 'bad') + '">' + (good ? 'Genuine governed receipt' : 'Seal broken') + '</div>' +
+      '<p class="sub">' + (good ? 'Issued and signed by the DeBacco Nexus Gov5 Gateway, and unchanged since.' : 'This record does not match its signature. Do not rely on it.') + '</p>' +
+      '<div class="checks">' + ck(v.hashOk, 'Contents match the hash') + ck(v.signatureOk, 'Ed25519 signature valid') + ck(v.signedByThisGateway, 'Signed by the DeBacco Nexus gateway key') + '</div></div>' +
+    '<div class="panel"><h2>Decision</h2><div class="kv">' +
+      '<div>Verdict</div><div><span class="v ' + vd[1] + '">' + esc(vd[0]) + '</span><div style="font-size:13px;color:var(--muted);margin-top:4px">' + esc(vd[2]) + '</div></div>' +
+      '<div>Time</div><div>' + esc(pt(d.timestamp)) + '</div>' +
+      (d.model ? '<div>Model</div><div>' + esc(d.model) + '</div>' : '') +
+      (d.hold ? '<div>Human review</div><div>' + esc(d.hold.status) + '</div>' : '') +
+    '</div><table>' + d.checks.map(c => '<tr><td>' + esc(c.label) + (c.resolvedBy ? '<div style="font-size:12px;color:var(--muted)">Resolved by ' + esc(c.resolvedBy) + '</div>' : '') + '</td><td style="text-align:right"><span class="v ' + (c.result === 'pass' ? 'ok' : c.result === 'fail' ? 'bad' : 'amb') + '">' + esc(c.result) + '</span></td></tr>').join('') + '</table></div>' +
+    '<div class="panel"><h2>ECOS: Environmental Certification &amp; Oversight Standard</h2>' +
+      (e.modelRan === false ? '<p class="note" style="font-size:14px;color:var(--ink)"><b>0 J.</b> No model ran for this request.</p>' :
+      '<div class="cards"><div class="c"><b>' + sig(g.energy_j) + ' J</b><span>Energy</span></div><div class="c"><b>' + sig(g.co2_g) + ' g</b><span>CO&#8322;e</span></div><div class="c"><b>' + sig(g.water_ml) + ' mL</b><span>Water</span></div>' +
+      (g.human_usd != null ? '<div class="c"><b>$' + (Number(g.human_usd) >= 0.01 ? Number(g.human_usd).toFixed(2) : Number(g.human_usd || 0).toPrecision(2)) + '</b><span>Human cost of the carbon</span></div>' : '') + '</div>') +
+      '<div class="kv">' + '<div>Standard</div><div>' + esc(e.standard || '–') + '</div>' + (e.region ? '<div>Grid</div><div>' + esc(e.region) + '</div>' : '') +
+        (e.planet && e.planet.graceFo ? '<div>NASA GRACE-FO</div><div>' + esc(e.planet.graceFo.region) + ': ' + esc(e.planet.graceFo.waterStorageCmEWT) + ' cm water storage change</div>' : '') +
+        (e.planet && e.planet.noaaCo2 ? '<div>NOAA CO&#8322;</div><div>' + esc(e.planet.noaaCo2.ppm) + ' ppm (' + esc(e.planet.noaaCo2.period) + ', ' + esc(e.planet.noaaCo2.retrieval) + ')</div>' : '') + '</div>' +
+      '<p class="note">' + esc(e.disclosure || 'Declared modelled estimates, not hardware meter readings.') + '</p></div>' +
+    '<div class="panel"><h2>Fingerprints</h2><div class="kv"><div>Receipt</div><div class="mono">' + esc(d.receiptId) + '</div><div>Receipt hash</div><div class="mono">' + esc(d.receiptHash) + '</div><div>Previous in chain</div><div class="mono">' + esc(d.previousReceiptHash || 'first in chain') + '</div></div>' +
+      '<p class="note">This page shows what proves the record. The customer, the request text and the provider IDs stay private with the customer. <a href="' + esc(d.publicKeyUrl) + '" target="_blank" rel="noopener">Gateway public key</a>.</p></div>';
+}).catch(() => { document.getElementById('out').innerHTML = '<div class="hero"><div class="state bad">Could not check</div><p class="sub">The check page could not reach the gateway. Try again.</p></div>'; });
+})();
+</script>
+</body>
+</html>

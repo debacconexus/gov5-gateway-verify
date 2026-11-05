@@ -1,0 +1,72 @@
+{
+  "ranAt": "2026-11-05T21:24:34.201Z",
+  "agents": 300,
+  "chartersIssued": 300,
+  "issueSeconds": 1.21,
+  "nightWork": {
+    "requests": 900,
+    "seconds": 6.44,
+    "requestsPerSecond": 140,
+    "reachedTheAiModel": 882
+  },
+  "oneAtATimeLatencyMs": {
+    "median": 7.1,
+    "p95": 13.5
+  },
+  "underFullLoadLatencyMs": {
+    "median": 428.4,
+    "p95": 609.5,
+    "p99": 1847.1
+  },
+  "outcomes": {
+    "held for a person": 24,
+    "worked": 882,
+    "refused": 66
+  },
+  "byRole": {
+    "money": {
+      "held for a person": 6
+    },
+    "worker": {
+      "worked": 801
+    },
+    "sleeper": {
+      "worked": 36
+    },
+    "lead": {
+      "worked": 30
+    },
+    "hidden": {
+      "refused": 6
+    },
+    "no-owner": {
+      "worked": 15
+    },
+    "privacy": {
+      "held for a person": 6
+    },
+    "sleeper (woke up)": {
+      "held for a person": 12
+    },
+    "after stop-all": {
+      "refused": 60
+    }
+  },
+  "helpers": {
+    "allowed": 20,
+    "refused": 10
+  },
+  "sleepersWoke": 12,
+  "sleepersReachedTheModel": 0,
+  "stopAll": {
+    "stopped": 320,
+    "receipt": "gwr_a581faa4018871873b984f62",
+    "triedAfter": 60,
+    "refusedAfter": 60
+  },
+  "receipts": {
+    "total": 1377,
+    "sampleChecked": 63,
+    "sampleVerified": 63
+  }
+}

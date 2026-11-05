@@ -1,0 +1,536 @@
+{
+  "startedAt": "2026-11-05T21:24:03.901Z",
+  "results": {
+    "adminKeyRequired": {
+      "pass": true
+    },
+    "sdkCreate": {
+      "pass": true,
+      "text": "Hello from the provider.",
+      "upstreamCalls": 1
+    },
+    "sdkStream": {
+      "pass": true,
+      "streamed": "Streamed through the gate."
+    },
+    "sdkTools": {
+      "pass": true
+    },
+    "receipt": {
+      "pass": true,
+      "receiptId": "gwr_16398dbf4cc5acb7cffffa6a",
+      "verdict": "CERTIFIED",
+      "tokens": [
+        12,
+        6
+      ],
+      "providerIds": [
+        {
+          "messageId": "msg_up_4",
+          "requestId": "req_up_4"
+        }
+      ],
+      "gateMs": 0.27,
+      "otherTenantStatus": 404
+    },
+    "identity401": {
+      "pass": true
+    },
+    "blocked": {
+      "pass": true,
+      "message": "403 {\"type\":\"error\",\"error\":{\"type\":\"permission_error\",\"message\":\"Governance: blocked before the model (injection). Receipt gwr_de7f852828cd3cf7d3ecc9b6.\"}}"
+    },
+    "held": {
+      "pass": true,
+      "holdId": "HOLD-MW41ZGW3-954F06",
+      "message": "403 {\"type\":\"error\",\"error\":{\"type\":\"permission_error\",\"message\":\"Governance hold HOLD-MW41ZGW3-954F06: a person must approve this request (ssn). After approval, resend it with the header x-governance-hold-id: HOLD-MW41ZGW3-954F06.\"}}"
+    },
+    "approvalFlow": {
+      "pass": true,
+      "otherTenantRefused": true,
+      "ssnCheck": {
+        "id": "ssn",
+        "stage": "pre-model (code)",
+        "label": "Social Security number in the request",
+        "action": "WAIT",
+        "result": "fail",
+        "resolvedBy": "human approval",
+        "approver": "James DeBacco",
+        "approvedAt": "2026-11-05T21:24:04.044Z",
+        "approvalReason": "Verified caseworker request.",
+        "holdId": "HOLD-MW41ZGW3-954F06"
+      },
+      "history": [
+        "WAIT",
+        "GO"
+      ],
+      "reuseRefused": true
+    },
+    "overhead": {
+      "pass": true,
+      "directP50ms": 1.35,
+      "gatewayP50ms": 4.06,
+      "addedP50ms": 2.71
+    },
+    "openai": {
+      "pass": true,
+      "streamed": "Streamed via OpenAI.",
+      "heldStatus": 403,
+      "heldMessage": "403 Governance hold HOLD-MW41ZH6H-FBE3D1: a person must approve this request (money-approval). After approval, resend it with the header x-governance-hold-id: HOLD-MW41ZH6H-FBE3D1.",
+      "receiptTokens": [
+        11,
+        5
+      ],
+      "wrongFormatStatus": 400
+    },
+    "consoleSignIn": {
+      "pass": true,
+      "pageStatus": 200,
+      "noKey": 401,
+      "customerRole": "customer",
+      "operatorSees": 3
+    },
+    "consoleReviewerSeesHeld": {
+      "pass": true,
+      "holdId": "HOLD-MW41ZH72-10D17C",
+      "operatorSeesText": false,
+      "reviewerSeesText": true,
+      "plaintextOnDisk": false
+    },
+    "consoleDecide": {
+      "pass": true,
+      "otherReviewer": 404,
+      "developerKey": 403,
+      "operator": 403,
+      "missingReason": 400,
+      "decisionReceiptValid": {
+        "hashOk": true,
+        "signatureOk": true,
+        "signedByThisGateway": true,
+        "valid": true
+      },
+      "approver": "Dana Ruiz (reviewer key gwv_6fe01f...)",
+      "heldTextDeleted": true
+    },
+    "consoleRulesPerCustomer": {
+      "pass": true,
+      "developerCanEdit": false,
+      "history": [
+        {
+          "at": "2026-11-05T21:24:04.487Z",
+          "by": "Dana Ruiz (reviewer key gwv_6fe01f...)",
+          "rule": "injection",
+          "from": "NO",
+          "to": "WAIT"
+        },
+        {
+          "at": "2026-11-05T21:24:04.487Z",
+          "by": "Dana Ruiz (reviewer key gwv_6fe01f...)",
+          "rule": "ssn",
+          "from": "WAIT",
+          "to": "OFF"
+        }
+      ],
+      "ssnCheckInReceipt": {
+        "id": "ssn",
+        "stage": "pre-model (code)",
+        "label": "Social Security number in the request",
+        "action": "OFF",
+        "result": "off",
+        "policyNote": "Matched, but this check is turned off by the customer policy."
+      },
+      "injectionNowHeld": 403,
+      "otherCustomerUnchanged": "403 {\"type\":\"error\",\"error\":{\"type\":\"permission_error\",\"message\":\"Governance hold HOLD-MW41ZH91-FC8D2E: a person must approve this request (ssn). After approval, resend it with the header x-governance-hold-id: HOLD-MW41ZH91-FC8D2E.\"}}"
+    },
+    "consoleReceipts": {
+      "pass": true,
+      "mine": 63,
+      "all": 70,
+      "held": 3,
+      "searchHits": 3,
+      "crossCustomer": 404,
+      "summary": {
+        "total": 63,
+        "certified": 57,
+        "blocked": 2,
+        "held": 3,
+        "medianGateMs": 0.191
+      }
+    },
+    "consoleCustomers": {
+      "pass": true,
+      "created": 201,
+      "defaultFailMode": "closed",
+      "afterRevoke": 401,
+      "gatewayAfterRevoke": 401
+    },
+    "ecos": {
+      "pass": true,
+      "standard": "ECOS-2026.4",
+      "energyJ": 948.384,
+      "expectedJ": 948.384,
+      "co2g": 0.052187,
+      "region": "WECC California (CAMX)",
+      "nlGrid": 0.2622,
+      "blockedEnergy": 0,
+      "regionChange": "US",
+      "summary": {
+        "energyJ": 54782.416,
+        "co2g": 3.01453,
+        "waterMl": 72.324983,
+        "humanUsd": 0.00057301,
+        "listPriceUsd": 0.01008,
+        "noModelRequests": 6,
+        "standards": [
+          "ECOS-2026.4"
+        ],
+        "regions": [
+          "WECC California (CAMX)"
+        ],
+        "current": "ECOS-2026.4"
+      }
+    },
+    "qrPublicCheck": {
+      "pass": true,
+      "verifyUrl": "https://gateway.debacconexus.ai/r/gwr_16398dbf4cc5acb7cffffa6a/3dd00c2b1ff82ca8",
+      "publicValid": {
+        "hashOk": true,
+        "signatureOk": true,
+        "signedByThisGateway": true,
+        "valid": true
+      },
+      "privateFieldsFound": [],
+      "wrongHashCode": 404,
+      "codeFromAnotherReceipt": 404,
+      "qrBytes": 129507
+    },
+    "limitsSettings": {
+      "pass": true,
+      "defaults": {
+        "dailyUsd": null,
+        "monthlyUsd": null,
+        "atLimit": "WAIT",
+        "alertPct": 80,
+        "loopRepeats": 60,
+        "loopWindowSec": 60,
+        "loopAction": "WAIT",
+        "maxOutputTokens": null,
+        "moneyActions": "WAIT",
+        "moneyTools": [],
+        "manualCheckMin": null,
+        "holdReviewMin": null,
+        "staffHourlyUsd": null,
+        "promptCache": "AUTO",
+        "sourceCheck": "FLAG",
+        "hiddenInstructions": "WAIT",
+        "allowedTools": [],
+        "toolAction": "WAIT",
+        "handoffAction": "NO",
+        "coordAgents": 5,
+        "coordWindowSec": 60,
+        "coordAction": "FLAG",
+        "splitUsd": null,
+        "splitAction": "WAIT",
+        "fanOut": 10,
+        "fanOutAction": "FLAG",
+        "dormantHours": 24,
+        "dormantAction": "WAIT",
+        "orphanAction": "FLAG",
+        "criticalContain": "RECOMMEND",
+        "watchDelegation": "ALLOW",
+        "driftAction": "WAIT",
+        "covertAction": "WAIT",
+        "covertWindowSec": 3600,
+        "trustCalls": 50,
+        "trustDays": 7,
+        "watchDays": 30
+      },
+      "customerPut": 403,
+      "badValue": 400
+    },
+    "answerSizeCap": {
+      "pass": true,
+      "sentToProvider": 100,
+      "detail": "Answer limited to 100 tokens (asked for 5000)."
+    },
+    "spendingCap": {
+      "pass": true,
+      "alertHeader": "over-80-percent",
+      "spendHeader": "day=81.7%",
+      "atCapHeld": 403,
+      "atCapRefused": 403,
+      "providerCallsAtCap": 0,
+      "worstCaseHeld": 403
+    },
+    "loopGuard": {
+      "pass": true,
+      "statuses": [
+        200,
+        200,
+        200,
+        403,
+        403
+      ],
+      "providerCalls": 3,
+      "afterApproval": 200
+    },
+    "promptCache": {
+      "pass": true,
+      "firstCallSaved": -0.003,
+      "repeatCallSaved": 0.0108,
+      "customerOwnCachingCredited": false,
+      "consoleCacheUsd": 0.0078
+    },
+    "agentHandoffs": {
+      "pass": true,
+      "planner": "Agent media-planner acting for Limits Co under handoff hf_b12497166b98d73e (handoff key verified)",
+      "outsideTools": 403,
+      "handOnMoreTools": "Cannot hand on tools the parent does not hold: send_wire.",
+      "handOnMoreBudget": "Cannot hand on more budget than remains ($0.0094).",
+      "buyerChain": [
+        "media-planner",
+        "buyer"
+      ],
+      "parentSpentIncludesChild": 0.0012,
+      "overBudget": 403,
+      "revoked": 2,
+      "H_afterRevoke": 403,
+      "forgedKey": 401
+    },
+    "trojanGuard": {
+      "pass": true,
+      "plantedOrder": 403,
+      "invisibleText": 403,
+      "cleanDocument": 200,
+      "unapprovedTool": 403,
+      "approvedTool": 200,
+      "detail": "A document tells the AI to ignore its instructions (\"ignore all previous instructions\"); A document tells the AI to hide something from people (\"Do not tell the user\")."
+    },
+    "sourceCheck": {
+      "pass": true,
+      "flagHeader": "flag; 1 not found in sources; details on receipt",
+      "flagged": {
+        "numbers": {
+          "total": 2,
+          "notFound": [
+            "34%"
+          ]
+        },
+        "references": {
+          "total": 4,
+          "notFound": [
+            "http://127.0.0.1:18832/ref/missing",
+            "doi:10.1000/fake"
+          ],
+          "unchecked": []
+        }
+      },
+      "heldStatus": 403,
+      "reviewerSees": [
+        {
+          "name": "Number not in the sources",
+          "input": "34%"
+        },
+        {
+          "name": "Reference not found",
+          "input": "http://127.0.0.1:18832/ref/missing"
+        },
+        {
+          "name": "Reference not found",
+          "input": "doi:10.1000/fake"
+        }
+      ],
+      "releasedWithoutNewCall": true,
+      "cleanHeader": "pass"
+    },
+    "moneyActionHeld": {
+      "pass": true,
+      "held": 403,
+      "reviewerSees": [
+        {
+          "name": "send_payment",
+          "input": {
+            "city": "Los Angeles"
+          }
+        }
+      ],
+      "operatorSees": null,
+      "released": 200,
+      "modelCallsOnRelease": 0,
+      "reused": 403,
+      "readOnlyTool": 200
+    },
+    "moneyActionStream": {
+      "pass": true,
+      "streamHeld": 403,
+      "streamReleased": 200,
+      "deniedResend": 403,
+      "nonMoneyStream": 200
+    },
+    "moneyActionOpenAI": {
+      "pass": true,
+      "message": "Governance hold HOLD-MW41ZI56-6F4AEF: the AI tried to move money or set a price (set_price). A person must approve it. After approval, resend the same request with the header x-governance-hold-id: HOLD-MW41ZI56-6F4AEF to receive the approved answer.",
+      "spendToday": 0.04026,
+      "changesRecorded": 20,
+      "savings": {
+        "all": {
+          "stopped": 6,
+          "usd": 0.0024,
+          "cacheUsd": 0.0078,
+          "cacheRequests": 2,
+          "energyJ": 7718.016,
+          "co2g": 0.424704,
+          "waterMl": 10.189494,
+          "checked": 29,
+          "decisions": 5,
+          "hoursAvoided": 1.45,
+          "hoursSpent": 0.42,
+          "staffUsd": 62,
+          "netHours": 1.03
+        },
+        "month": {
+          "stopped": 6,
+          "usd": 0.0024,
+          "cacheUsd": 0.0078,
+          "cacheRequests": 2,
+          "energyJ": 7718.016,
+          "co2g": 0.424704,
+          "waterMl": 10.189494,
+          "checked": 29,
+          "decisions": 5,
+          "hoursAvoided": 1.45,
+          "hoursSpent": 0.42,
+          "staffUsd": 62,
+          "netHours": 1.03
+        },
+        "staffSet": true,
+        "staffCustomers": 1,
+        "feeUsd": 0.0002,
+        "feeCustomers": 1,
+        "roi": {
+          "savedUsd": 62.0102,
+          "modelUsd": 0.0024000000000000002,
+          "cacheUsd": 0.0078000000000000005,
+          "staffUsd": 62,
+          "feeUsd": 0.0002,
+          "pct": 31005100,
+          "multiple": 310051,
+          "paidBack": true
+        },
+        "capStops": 2,
+        "loopStops": 1,
+        "moneyHeld": 3,
+        "moneyDenied": 1,
+        "moneyApproved": 2,
+        "priced": true,
+        "medianUsd": 0.0004,
+        "basisRequests": 23
+      },
+      "people": {
+        "all": {
+          "decisions": 5,
+          "approved": 4,
+          "denied": 1,
+          "waited": 9,
+          "moneyWaited": 3,
+          "reviewers": 1,
+          "judgmentHours": 0.42,
+          "handedBackHours": 1.45
+        },
+        "month": {
+          "decisions": 5,
+          "approved": 4,
+          "denied": 1,
+          "waited": 9,
+          "moneyWaited": 3,
+          "reviewers": 1,
+          "judgmentHours": 0.42,
+          "handedBackHours": 1.45
+        },
+        "staffSet": true
+      }
+    },
+    "alerts": {
+      "pass": true,
+      "holdAlert": "Gov5 Gateway voice receipt: A person must approve a request for Alert Co: Social Security number in the request.\nWhy: The brake held this request for a person to decide. No AI answer was made. The reason: Social Security number in the request. 7 checks passed. No AI model ran, so nothing was spent on it.\nNothing was sent to the AI. It waits for your reviewer.\nAgent: Tenant Alert Co (gateway API key verified)\nHold HOLD-MW41ZI69-5D3F24\nReview and decide in the Console: https://gateway.debacconexus.ai/console#holds",
+      "webhookSigned": true,
+      "blockedAlert": "Gov5 Gateway voice receipt: Refused before the model for Alert Co: Instruction override or prompt injection.\nWhy: The brake stopped this request before any AI ran. The reason: Instruction override or prompt injection. 7 checks passed. No AI model ran, so nothing was spent on it.\nAgent: Tenant Alert Co (gateway API key verified)\nReceipt gwr_7b2729989b91fe61e3337d38\nHear Oshi explain it: https://gateway.debacconexus.ai/console#hear-gwr_7b2729989b91fe61e3337d38",
+      "sentInWindow": 30,
+      "testDelivered": 2
+    },
+    "agentsActingTogether": {
+      "pass": true,
+      "sameRequest": "The same request arrived from 3 different agents in 60 seconds (limit 3). This agent was named by the customer's code, not verified by a handoff key.",
+      "split": "3 money actions from 3 agents in 60 seconds add up to $750.00, past the $600 threshold, though each one is under it.",
+      "splitHold": "HOLD-MW41ZJZD-DEF904",
+      "fanOut": "Governance: handoff refused. The customer key asked for 4 new agent handoffs in 60 seconds (limit 3). Receipt gwr_0f3293a88a8e382ba0e9e685.",
+      "patterns": [
+        "fan-out",
+        "split-payments",
+        "same-request"
+      ],
+      "alerts": [
+        "Agents acting together for Swarm Co: the same request from 3 agents.",
+        "Agents acting together for Swarm Co: payments split under the limit, $750.00 in 3 payments.",
+        "Gov5 Gateway voice receipt: A person must approve an AI answer for Swarm Co: Agents acting together: payments split under the limit ($750.00 in 3 payments).",
+        "Agents acting together for Swarm Co: the customer key is handing work to many new agents."
+      ]
+    },
+    "agentPasses": {
+      "pass": true,
+      "newStanding": "new",
+      "trusted": "4 clean calls over 0 days, nothing against it in the last 30 days.",
+      "renewedUntil": "2026-11-05T21:34:08.734Z",
+      "buyer": "1 mark in the last 30 days, the latest a hold a person denied on 2026-11-05.",
+      "renewRefused": "Renewal refused: the pass for buyer is on watch. 1 mark in the last 30 days, the latest a hold a person denied on 2026-11-05. Issue a new handoff instead.",
+      "suspendedRevoked": 1,
+      "afterSuspend": 403,
+      "final": {
+        "standing": "watch",
+        "calls": 6,
+        "keys": 2
+      }
+    },
+    "providerKeySealed": {
+      "pass": true
+    }
+  },
+  "summary": {
+    "adminKeyRequired": true,
+    "sdkCreate": true,
+    "sdkStream": true,
+    "sdkTools": true,
+    "receipt": true,
+    "identity401": true,
+    "blocked": true,
+    "held": true,
+    "approvalFlow": true,
+    "overhead": true,
+    "openai": true,
+    "consoleSignIn": true,
+    "consoleReviewerSeesHeld": true,
+    "consoleDecide": true,
+    "consoleRulesPerCustomer": true,
+    "consoleReceipts": true,
+    "consoleCustomers": true,
+    "ecos": true,
+    "qrPublicCheck": true,
+    "limitsSettings": true,
+    "answerSizeCap": true,
+    "spendingCap": true,
+    "loopGuard": true,
+    "promptCache": true,
+    "agentHandoffs": true,
+    "trojanGuard": true,
+    "sourceCheck": true,
+    "moneyActionHeld": true,
+    "moneyActionStream": true,
+    "moneyActionOpenAI": true,
+    "alerts": true,
+    "agentsActingTogether": true,
+    "agentPasses": true,
+    "providerKeySealed": true,
+    "failures": []
+  },
+  "finishedAt": "2026-11-05T21:24:08.792Z"
+}

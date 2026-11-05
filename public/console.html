@@ -1,0 +1,1243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gov5 Gateway Console | DeBacco Nexus</title>
+<link rel="icon" href="/dn-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rubik:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F8F8; --panel:#FFFFFF; --panel2:#EEF4F5; --line:#D7E2E4; --text:#0E1A1C; --muted:#5A6B72; --faint:#8A9BA1;
+  --teal:#0C8A96; --zircon:#4CD8E0; --tealSoft:#E3F4F5; --ok:#1F8A4C; --okSoft:#E2F3E9; --warn:#9A6400; --warnSoft:#FBF0DA;
+  --bad:#B4332B; --badSoft:#FBE5E3; --onTeal:#FFFFFF;
+  --lhNote:#D400B8; --lhNoteGlow:rgba(212,0,184,.45); --lhHeld:#FFC400; --lhHeldGlow:rgba(255,196,0,.5); --lhWatch:#FF7A00; --lhWatchGlow:rgba(255,122,0,.4); --lhStop:#FF2D20; --lhStopGlow:rgba(255,45,32,.4); --lhOk:#00B85C; --lhWork:#18C964; --lhWorkGlow:rgba(24,201,100,.55); --lhLive:#FFFFFF; --shadow:0 1px 2px rgba(14,26,28,.06),0 4px 16px rgba(14,26,28,.05); color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1416; --panel:#111D20; --panel2:#16252A; --line:#24363B; --text:#E7F1F2; --muted:#9DB3B8; --faint:#6E8790;
+  --teal:#3FC3CE; --zircon:#4CD8E0; --tealSoft:#123236; --ok:#4CC27F; --okSoft:#12301F; --warn:#E8B04B; --warnSoft:#33280F;
+  --bad:#F07A70; --badSoft:#3A1A17; --onTeal:#062023; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark;
+  --lhNote:#FF4FD8; --lhNoteGlow:rgba(255,79,216,.5); --lhHeld:#FFD60A; --lhHeldGlow:rgba(255,214,10,.55); --lhWatch:#FF8A1F; --lhWatchGlow:rgba(255,138,31,.45); --lhStop:#FF453A; --lhStopGlow:rgba(255,69,58,.5); --lhOk:#30D158; --lhWork:#30D158; --lhWorkGlow:rgba(48,209,88,.6); --lhLive:#FFFFFF}}
+:root[data-theme="dark"]{
+  --bg:#0B1416; --panel:#111D20; --panel2:#16252A; --line:#24363B; --text:#E7F1F2; --muted:#9DB3B8; --faint:#6E8790;
+  --teal:#3FC3CE; --zircon:#4CD8E0; --tealSoft:#123236; --ok:#4CC27F; --okSoft:#12301F; --warn:#E8B04B; --warnSoft:#33280F;
+  --bad:#F07A70; --badSoft:#3A1A17; --onTeal:#062023; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark;
+  --lhNote:#FF4FD8; --lhNoteGlow:rgba(255,79,216,.5); --lhHeld:#FFD60A; --lhHeldGlow:rgba(255,214,10,.55); --lhWatch:#FF8A1F; --lhWatchGlow:rgba(255,138,31,.45); --lhStop:#FF453A; --lhStopGlow:rgba(255,69,58,.5); --lhOk:#30D158; --lhWork:#30D158; --lhWorkGlow:rgba(48,209,88,.6); --lhLive:#FFFFFF}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--teal)}
+.mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:12.5px}
+/* top bar */
+.top{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;
+  padding:10px max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left))}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);min-width:0;flex:none}
+.brand img{width:38px;height:38px}
+.brand .name{font-family:Rubik,Inter,sans-serif;font-weight:700;font-size:18px;line-height:1.1;white-space:nowrap}
+.brand .tag{font-size:11.5px;color:var(--teal);font-weight:600;letter-spacing:.02em;white-space:nowrap}
+.g5{color:var(--teal)}
+.brand .tag.by{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.lockup{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto 20px}
+.lockup img{width:64px;height:64px;flex:none}
+.lockup .ln{font-family:Rubik,Inter,sans-serif;font-weight:800;font-size:30px;line-height:1;letter-spacing:-.02em;color:var(--text);white-space:nowrap}
+.lockup .lt{font-size:13.5px;color:var(--muted);margin-top:6px}
+.lockup .lb{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-top:4px}
+.sep{width:1px;height:28px;background:var(--line)}
+.product{font-weight:600;font-size:14px;color:var(--muted);white-space:nowrap}
+.spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.theme{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.theme button{border:0;background:transparent;padding:5px 10px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer}
+.theme button.on{background:var(--teal);color:var(--onTeal)}
+select.cust{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 8px;max-width:220px}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 12px;font-weight:600;cursor:pointer}
+a.btn{text-decoration:none;color:var(--text);display:inline-block}
+.btn:hover{border-color:var(--teal)}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:var(--onTeal)}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+/* layout */
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 60px)}
+nav{border-right:1px solid var(--line);padding:16px 10px;background:var(--panel)}
+nav .lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);padding:0 10px 8px}
+nav button{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;background:transparent;text-align:left;padding:9px 12px;border-radius:8px;font-weight:600;color:var(--muted);cursor:pointer}
+nav button:hover{background:var(--panel2);color:var(--text)}
+nav button.on{background:var(--tealSoft);color:var(--teal)}
+nav .count{background:var(--warn);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px}
+main{padding:24px max(16px,env(safe-area-inset-right)) 48px 24px;min-width:0}
+h1{font-size:22px;margin:0 0 4px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 20px;max-width:70ch}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);min-width:0}
+.card .n{font-size:26px;font-weight:700;letter-spacing:-.01em}
+.card .k{font-size:12px;color:var(--muted);font-weight:600}
+.card.teal{border-top:3px solid var(--teal)} .card.ok{border-top:3px solid var(--ok)} .card.bad{border-top:3px solid var(--bad)} .card.warn{border-top:3px solid var(--warn)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin-bottom:16px;min-width:0}
+.panel h2{font-size:15px;margin:0;padding:14px 16px;border-bottom:1px solid var(--line)}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+td select{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:5px 8px}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:700;white-space:nowrap}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--panel2)}
+.v{display:inline-block;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:700;white-space:nowrap}
+.v.CERTIFIED,.v.GO,.v.approved{background:var(--okSoft);color:var(--ok)}
+.v.NO,.v.denied,.v.PROVIDER_ERROR,.v.GATE_ERROR{background:var(--badSoft);color:var(--bad)}
+.v.WAIT,.v.pending{background:var(--warnSoft);color:var(--warn)}
+.v.other{background:var(--panel2);color:var(--muted)}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:12px;margin:2px 4px 2px 0;background:var(--panel2)}
+.empty{padding:28px 16px;color:var(--muted);text-align:center}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.toolbar input,.toolbar select{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 10px}
+.toolbar input{flex:1;min-width:180px}
+/* holds */
+.hold{padding:16px;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.hold:last-child{border-bottom:0}
+.hold .head{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.prompt{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto}
+.locked{color:var(--muted);font-size:13px;font-style:italic}
+.decide{display:grid;grid-template-columns:1fr 2fr auto auto;gap:8px}
+.decide input{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 10px;min-width:0}
+/* people in charge */
+.people{border-top:3px solid var(--teal)}
+.people .trade{margin:14px 16px 0;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);font-size:15px;line-height:1.45}
+/* savings */
+.savings{border-top:3px solid var(--ok)}
+.savings .cards{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.savings .big{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:16px}
+.savings .big .n{font-size:34px;font-weight:800;letter-spacing:-.02em;color:var(--ok)}
+.savings .big .k{font-size:12.5px;color:var(--muted);font-weight:600}
+/* return on investment meter */
+.roi{margin:0 16px 16px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);display:grid;gap:8px}
+.roi .row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.roi .k{font-size:12.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.roi .v{font-size:26px;font-weight:800;letter-spacing:-.02em} .roi .v.ok{color:var(--ok)} .roi .v.warn{color:var(--warn)} .roi .v.low{color:var(--text)}
+.roi .gauge{position:relative;height:16px;border-radius:999px;background:var(--panel);border:1px solid var(--line);overflow:hidden}
+.roi .gauge i{display:block;height:100%;border-radius:999px;background:var(--teal)} .roi .gauge i.ok{background:var(--ok)} .roi .gauge i.warn{background:var(--warn)}
+/* agents */
+.tree{list-style:none;margin:0;padding:0}
+.tree .tree{padding-left:22px;border-left:2px solid var(--line);margin-left:10px}
+.node{padding:12px 16px;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.node .head{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.node .who{font-weight:700}
+.v.active{background:var(--okSoft);color:var(--ok)} .v.revoked,.v.expired{background:var(--badSoft);color:var(--bad)}
+/* limits */
+.meter{height:10px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ok)} .meter.warn i{background:var(--warn)} .meter.bad i{background:var(--bad)}
+.alert{margin:0 0 16px;border:1px solid var(--warn);background:var(--warnSoft);color:var(--text);border-radius:10px;padding:12px 14px;font-weight:600}
+.alert.bad{border-color:var(--bad);background:var(--badSoft)}
+.form .hint{font-weight:400;color:var(--faint);font-size:11.5px}
+/* drawer */
+.drawer{position:fixed;inset:0;background:rgba(5,12,14,.45);display:flex;justify-content:flex-end;z-index:20}
+.drawer .in{width:min(720px,100%);height:100%;overflow:auto;background:var(--bg);border-left:1px solid var(--line);
+  padding:20px max(16px,env(safe-area-inset-right)) 40px 20px}
+.verify{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 16px}
+.lh{padding:14px 16px 16px}
+.lh .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.lh .legend button{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text)}
+.lh .legend button.off{opacity:.45}
+.lh .sky{position:relative;display:grid;grid-template-columns:repeat(auto-fill,minmax(18px,1fr));gap:6px;max-width:100%}
+.lh .dot{width:18px;height:18px;border-radius:50%;border:0;padding:0;cursor:pointer}
+.lh .dot:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+
+
+
+
+
+.sw{width:12px;height:12px;border-radius:50%;display:inline-block}
+.dot.quiet,.sw.quiet{background:var(--lhWork)}
+@keyframes lhblink{0%,100%{opacity:1;box-shadow:0 0 0 2px var(--lhWorkGlow),0 0 10px var(--lhWork)}50%{opacity:.35;box-shadow:none}}
+.lh .dot.quiet{opacity:.5}
+.lh .dot.quiet.acting,.lh .dot.trusted.acting{opacity:1;animation:lhblink var(--bt,2.2s) ease-in-out infinite;animation-delay:var(--bd,0s)}
+@keyframes lhheld{0%,100%{box-shadow:0 0 0 3px var(--lhHeldGlow),0 0 16px var(--lhHeld)}50%{box-shadow:0 0 0 6px var(--lhHeldGlow),0 0 24px var(--lhHeld)}}
+.lh .dot.held{animation:lhheld 1.6s ease-in-out infinite}
+.dot.trusted,.sw.trusted{background:var(--lhOk);box-shadow:0 0 8px var(--lhOk)}
+.dot.watch,.sw.watch{background:var(--lhWatch);box-shadow:0 0 0 3px var(--lhWatchGlow),0 0 12px var(--lhWatch)}
+.dot.held,.sw.held{background:var(--lhHeld);box-shadow:0 0 0 3px var(--lhHeldGlow),0 0 14px var(--lhHeld)}
+.dot.stopped,.sw.stopped{background:var(--lhStop);box-shadow:0 0 0 3px var(--lhStopGlow)}
+.btn.revoke-all{letter-spacing:.03em;font-size:12.5px;white-space:nowrap}
+.btn.revoke-all.armed{background:var(--text);border-color:var(--bad);color:var(--bg);box-shadow:0 0 0 3px var(--badSoft)}
+.lh .recon{font-family:Rubik,Inter,sans-serif;margin:0 0 12px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.lh .recon .big{font-size:22px;font-weight:700;letter-spacing:.01em}
+.lh .recon .row{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:4px;font-size:15px;font-weight:600}
+.lh .recon .row span{display:inline-flex;align-items:center;gap:7px}
+.lh .recon .work{margin-top:6px;font-size:15px;color:var(--text)}
+.lh .recon .work b{font-size:18px;color:var(--lhOk)}
+
+
+
+
+@keyframes lhnote{0%,100%{box-shadow:0 0 0 0 var(--lhNote)}50%{box-shadow:0 0 0 6px var(--lhNoteGlow),0 0 18px var(--lhNote)}}
+.lh .dot.noted{outline:3px solid var(--lhNote);outline-offset:2px;animation:lhnote 1s ease-in-out infinite}
+.lh svg.lhlinks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.lh svg.lhlinks line{stroke:var(--lhNote);stroke-width:3;stroke-linecap:round;stroke-dasharray:7 6;animation:lhdash .9s linear infinite;opacity:.9}
+@keyframes lhdash{to{stroke-dashoffset:-26}}
+.sw.note{background:var(--lhNote);box-shadow:0 0 0 3px var(--lhNoteGlow)}
+@keyframes lhlin{0%,100%{box-shadow:0 0 0 0 var(--lhStop)}50%{box-shadow:0 0 0 6px var(--lhStopGlow),0 0 18px var(--lhStop)}}
+.lh .dot.lineage{animation:lhlin 1.1s ease-in-out infinite;outline:3px solid var(--lhStop);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.lh .dot.lineage,.lh .dot.quiet,.lh .dot.held,.lh .dot.noted,.lh svg.lhlinks line{animation:none}}
+.oshicap{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--text);color:var(--bg);font-size:17px;line-height:1.45;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;gap:10px;align-items:baseline}
+.oshicap b{color:var(--zircon);flex:none}
+.oshicap .t{flex:1;min-width:0}
+.oshicap .pcc{opacity:.75;white-space:nowrap}
+.oshicap .capmin{flex:none;align-self:flex-start;background:transparent;border:1px solid currentColor;color:inherit;border-radius:8px;font:inherit;font-size:14px;padding:2px 10px;cursor:pointer;opacity:.85}
+.oshicap.min .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oshicap.min .pcc{display:none}
+/* phones: Oshi's words take a small strip at the bottom, never the screen; scroll inside it, or shrink it to one line */
+@media (max-width:640px){
+  .oshicap{font-size:15px;line-height:1.4;max-height:26vh;overflow-y:auto;flex-wrap:wrap;gap:4px 8px;padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+  .oshicap .t{flex:1 1 60%}
+  .oshicap .pcc{order:3;width:100%;font-size:12px}
+}
+@keyframes lhp{0%{transform:scale(1)}35%{transform:scale(1.6);opacity:1;background:var(--lhLive);box-shadow:0 0 0 4px var(--lhWorkGlow),0 0 18px var(--lhWork)}100%{transform:scale(1)}}
+.lh .dot.pulse{animation:lhp .7s ease-out}
+.lh .dot.new{animation:lhp 1.4s ease-out 2}
+@media (prefers-reduced-motion:reduce){.lh .dot.pulse,.lh .dot.new{animation:none;outline:2px solid var(--zircon)}}
+.lh .live{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--bad)}
+.lh .live::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--bad)}
+.lh .feed{margin:10px 0 0;padding:0;list-style:none;font-size:14px;max-height:9.5em;overflow:auto}
+.lh .feed li{padding:3px 0;border-bottom:1px solid var(--line)}
+.owlist{list-style:none;margin:0;padding:0 16px 14px;max-height:20em;overflow-y:auto;overflow-x:hidden;font-size:14px;line-height:1.5}
+.owlist li{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding:8px 0;border-bottom:1px solid var(--line);min-width:0}
+.owlist li .m{white-space:nowrap;color:var(--muted);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px}
+.owlist li .t{min-width:0;overflow-wrap:anywhere}
+.owlist li.note{display:block}
+@media (max-width:640px){.owlist li{grid-template-columns:1fr}}
+.lh .card{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--panel2)}
+.lh .card h3{margin:0 0 6px;font-size:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.plain{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:12px 16px;margin:14px 0 10px;padding:18px;border:1px solid var(--line);border-radius:12px;font-size:17px;line-height:1.45}
+.plain .pk{color:var(--muted);font-weight:600}
+.plain .pv{min-width:0}
+@media (max-width:520px){.plain{grid-template-columns:1fr;gap:2px}.plain .pv{margin-bottom:10px}}
+.plainrel{margin:0 0 12px;font-size:15px}
+details.proof{margin-top:14px}
+details.proof>summary{cursor:pointer;font-weight:600;padding:10px 0;font-size:16px}
+.kv{display:grid;grid-template-columns:160px 1fr;gap:6px 12px;padding:14px 16px}
+.kv div:nth-child(odd){color:var(--muted);font-weight:600;font-size:13px}
+.kv div{min-width:0;word-break:break-word}
+pre.json{margin:0;padding:14px 16px;overflow:auto;max-height:420px;font-size:12px}
+/* forms */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;padding:16px}
+.form label{display:grid;gap:4px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.form input,.form select{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 10px;color:var(--text)}
+.reveal{margin:0 16px 16px;border:1px solid var(--warn);background:var(--warnSoft);border-radius:10px;padding:12px 14px;display:grid;gap:8px}
+.reveal code{word-break:break-all;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px}
+.note{font-size:12.5px;color:var(--muted)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:9px 16px;border-radius:8px;font-weight:600;z-index:30}
+/* sign in */
+.signin{max-width:440px;margin:8vh auto;padding:0 16px}
+.signin .panel{padding:24px}
+.signin img.lock{width:100%;max-width:300px;display:block;margin:0 auto 18px;background:#fff;border-radius:12px;padding:10px 14px}
+.signin input{width:100%;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:10px 12px;margin:8px 0 12px}
+.signin ul{padding-left:18px;color:var(--muted);font-size:13px}
+footer{color:var(--faint);font-size:12px;padding:16px 0 0}
+@media (max-width:1320px){.top .product,.top .sep{display:none}}
+@media (max-width:1440px){.top > .pill{display:none}}
+@media (max-width:1180px){.top{flex-wrap:wrap;row-gap:8px} .top .spacer{flex-basis:100%;height:0}}
+/* phones and tablets: the menu stays on the left, the header shrinks to one compact row */
+.navbtn{display:none}
+@media (max-width:900px){
+  .shell{grid-template-columns:168px 1fr} nav{padding:10px 6px} nav button{padding:8px 10px;font-size:13.5px}
+  .top{gap:8px;padding:6px max(12px,env(safe-area-inset-right)) 6px max(12px,env(safe-area-inset-left));flex-wrap:nowrap;row-gap:0} .top .spacer{flex:1;flex-basis:auto;height:auto}
+  .brand img{width:30px;height:30px} .brand .name{font-size:15px} .product,.sep,.brand .tag{display:none}
+  .top .btn{padding:6px 9px;font-size:12.5px} .btn.revoke-all{font-size:11px;padding:6px 8px} select.cust{max-width:150px;padding:5px 6px;font-size:13px}
+  .oshiv button{padding:5px 8px;font-size:12px} .theme button{padding:4px 7px;font-size:11px}
+  .decide{grid-template-columns:1fr}
+  /* phones: each fact on one row, a short label beside its value, so a card reads like a list instead of a column of gaps */
+  .kv{grid-template-columns:88px minmax(0,1fr);gap:7px 10px;padding:10px 0}
+  .kv div:nth-child(odd){font-size:12.5px;padding-top:1px}
+  .lh .card{padding:12px} .lh .kv{font-size:15px;line-height:1.35}
+  .lh .feed{font-size:15px;line-height:1.4;max-height:15em}
+  .lh .feed li{padding:7px 0}
+  .form{grid-template-columns:minmax(0,1fr)} .form>[style*="grid-column"]{grid-column:auto!important} .form input,.form select{min-width:0;max-width:100%}
+}
+/* a phone held sideways is short: the header scrolls away, and REVOKE ALL AI AUTHORITY stays pinned in the corner */
+@media (max-width:900px) and (max-height:520px){
+  .top{position:static} .shell{min-height:0}
+  .btn.revoke-all{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));z-index:45;font-size:11.5px;padding:9px 12px;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+}
+/* a phone held upright: the menu slides in from the left */
+@media (max-width:640px){
+  .navbtn{display:inline-flex}
+  .shell{grid-template-columns:1fr}
+  nav{position:fixed;left:0;top:0;bottom:0;width:min(270px,80vw);z-index:50;transform:translateX(-105%);transition:transform .2s ease;border-right:1px solid var(--line);box-shadow:4px 0 24px rgba(0,0,0,.35);padding-top:max(16px,env(safe-area-inset-top));padding-left:max(10px,env(safe-area-inset-left));overflow-y:auto}
+  body.navopen nav{transform:none}
+  body.navopen::after{content:"";position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:49}
+  nav button{padding:11px 12px;font-size:15px}
+  .top{flex-wrap:wrap;row-gap:6px} .top .spacer{flex-basis:100%;height:0;flex:none} select.cust{max-width:100%;flex:1}
+  main{padding-left:max(16px,env(safe-area-inset-left))}
+}
+@media (max-width:640px) and (prefers-reduced-motion:reduce){nav{transition:none}}
+.pill.pass-trusted{background:var(--okSoft);color:var(--ok)} .pill.pass-watch{background:var(--warnSoft);color:var(--warn)} .pill.pass-suspended{background:var(--badSoft);color:var(--bad)}
+
+/* THE WHY: the reason behind each decision, and Oshi's voice */
+.why{border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:12px;background:var(--panel);padding:16px 18px;margin:14px 0;box-shadow:var(--shadow)}
+.why .k{font:600 11px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+.why h2{margin:6px 0 4px;font-size:19px;line-height:1.3}
+.why .who{color:var(--muted);font-size:13.5px}
+.why ol.path{list-style:none;margin:14px 0 6px;padding:0;display:flex;flex-direction:column}
+.why ol.path li{display:grid;grid-template-columns:22px 1fr;gap:10px;position:relative;padding:0 0 12px}
+.why ol.path li:not(:last-child)::before{content:"";position:absolute;left:10px;top:20px;bottom:0;width:2px;background:var(--line)}
+.why ol.path .dot{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;border:2px solid var(--line);background:var(--panel2);color:var(--muted)}
+.why ol.path .pass .dot{border-color:var(--ok);color:var(--ok);background:var(--okSoft)}
+.why ol.path .stop .dot{border-color:var(--bad);color:var(--bad);background:var(--badSoft)}
+.why ol.path .ok .dot{border-color:var(--teal);color:var(--teal);background:var(--tealSoft)}
+.why ol.path .flag .dot{border-color:var(--warn);color:var(--warn);background:var(--warnSoft)}
+.why ol.path .t{font-weight:600}.why ol.path .d{color:var(--muted);font-size:13px}
+.why .seal{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);margin-top:8px;padding-top:10px}
+.why .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.why .stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.why .stats span{border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600;background:var(--panel2)}
+.oshiv{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.oshiv button{border:0;background:transparent;color:var(--muted);font:600 12px inherit;padding:6px 10px;cursor:pointer}
+.oshiv button.on{background:var(--teal);color:var(--onTeal)}
+.speaking{outline:2px solid var(--zircon);outline-offset:2px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => n == null ? '–' : Number(n).toLocaleString();
+const when = s => s ? new Date(s).toLocaleString() : '–';
+const sig = n => { n = Number(n || 0); if (!n) return '0'; const a = Math.abs(n); return a >= 100 ? Math.round(n).toLocaleString() : a >= 1 ? n.toFixed(2) : n.toPrecision(2); };
+const rng = (a, unit) => sig(a[0]) + ' to ' + sig(a[1]) + ' ' + unit;
+const ECOS_NOTE = 'ECOS figures are declared modelled estimates from provider-measured tokens and published coefficients, not hardware meter readings. NASA and NOAA observations give place context; they did not measure these requests.';
+const usd = n => n == null ? '–' : !Number(n) ? '$0.00' : '$' + (Math.abs(n) >= 0.01 ? Number(n).toFixed(2) : Number(n).toPrecision(2));
+let ECOS_META = null;
+async function ecosMeta(){ if (!ECOS_META) ECOS_META = await api('/ecos'); return ECOS_META; }
+const store = { get(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k,v); } catch(e){} } };
+const prefs = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
+const VERDICT_LABEL = { AGENTS_CONTAINED:'Agent contained', AGENTS_STOPPED:'All authority revoked', CERTIFIED:'Certified', NO:'Blocked', WAIT:'Held', GO:'Approved', GATE_ERROR:'Gate error', PROVIDER_ERROR:'Provider error', GATE_ERROR_PASSTHROUGH:'Passed, gate error', PROVIDER_UNREACHABLE:'Provider unreachable', PROVIDER_STREAM_ERROR:'Stream error', approved:'Approved', denied:'Denied', pending:'Waiting for review', HANDOFF:'Handoff issued', HANDOFF_REVOKED:'Handoff revoked', active:'Active', revoked:'Revoked', expired:'Expired' };
+const vbadge = v => '<span class="v ' + (['CERTIFIED','GO','approved','NO','denied','PROVIDER_ERROR','GATE_ERROR','WAIT','pending','active','revoked','expired'].includes(v) ? v : 'other') + '">' + esc(VERDICT_LABEL[v] || v || '–') + '</span>';
+const ACTION_LABEL = { NO:'Block', WAIT:'Hold for review', OFF:'Off' };
+
+const VIEWS = ['dashboard','holds','receipts','rules','limits','alerts','agents','customers'];
+let S = { key: store.get('gwc_key'), me: null, view: VIEWS.indexOf(location.hash.slice(1)) > 0 ? location.hash.slice(1) : 'dashboard', tenant: store.get('gwc_tenant') || '', pending: 0 };
+
+// ---------- theme ----------
+function applyTheme(t){ if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); else document.documentElement.removeAttribute('data-theme'); prefs.set('gwc_theme', t || 'system'); }
+applyTheme(prefs.get('gwc_theme') || 'system');
+function themeToggle(){
+  const t = prefs.get('gwc_theme') || 'system';
+  return '<div class="theme" role="group" aria-label="Theme">' + ['light','dark','system'].map(x => '<button data-theme-set="' + x + '" class="' + (t === x ? 'on' : '') + '">' + x[0].toUpperCase() + x.slice(1) + '</button>').join('') + '</div>';
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-theme-set]'); if (b) { applyTheme(b.dataset.themeSet); document.querySelectorAll('[data-theme-set]').forEach(x => x.classList.toggle('on', x === b)); } });
+
+// ---------- api ----------
+async function api(path, opts){
+  opts = opts || {};
+  const r = await fetch('/console/api' + path, { method: opts.method || 'GET', headers: Object.assign({ 'x-console-key': S.key }, opts.body ? { 'content-type':'application/json' } : {}), body: opts.body ? JSON.stringify(opts.body) : undefined });
+  let d = null; try { d = await r.json(); } catch(e) {}
+  if (r.status === 401) { signOut('Your key was not accepted. Sign in again.'); throw new Error('unauthorized'); }
+  if (!r.ok) throw new Error((d && d.error) || ('Request failed (' + r.status + ')'));
+  return d;
+}
+const q = () => S.me && S.me.role === 'operator' && S.tenant ? '?tenant=' + encodeURIComponent(S.tenant) : '';
+const qa = extra => { const base = q(); return base ? base + '&' + extra : '?' + extra; };
+function toast(m){ const t = document.createElement('div'); t.className = 'toast'; t.textContent = m; document.body.appendChild(t); setTimeout(() => t.remove(), 2600); }
+
+// ---------- sign in ----------
+function signOut(msg){ store.set('gwc_key', null); S.key = null; S.me = null; renderSignIn(msg); }
+function renderSignIn(msg){
+  $('#app').innerHTML = '<div class="signin"><div class="panel">' +
+    '<div class="lockup" role="img" aria-label="Gov5 Gateway, AI for People and Planet, by DeBacco Nexus"><img src="/dn-mark.png" alt=""><div><div class="ln"><span class="g5">Gov5</span> Gateway</div><div class="lt">AI for People and Planet</div><div class="lb">by DeBacco Nexus</div></div></div>' +
+    '<h1>Sign in to the Console</h1><p class="sub">Sign in with the key DeBacco Nexus gave you.</p>' +
+    (msg ? '<p style="color:var(--bad);font-weight:600">' + esc(msg) + '</p>' : '') +
+    '<form id="si"><input id="k" type="password" autocomplete="off" placeholder="Paste your key" aria-label="Key"><button class="btn primary" style="width:100%">Sign in</button></form>' +
+    '<ul><li><b>Reviewer key</b> (starts with gwv_): read and decide your held requests, set your rules.</li><li><b>Gateway key</b> (gwk_): view your receipts and rules.</li><li><b>Operator key</b>: DeBacco Nexus staff.</li></ul>' +
+    '<div style="display:flex;justify-content:center;margin-top:10px">' + themeToggle() + '</div></div>' +
+    '<footer style="text-align:center">Governedware&trade; &middot; Patent pending, U.S. 19/571,156</footer></div>';
+  $('#si').onsubmit = async e => { e.preventDefault(); const k = $('#k').value.trim(); if (!k) return; S.key = k; try { await boot(); store.set('gwc_key', k); } catch(err) { if (err.message !== 'unauthorized') renderSignIn(err.message); } };
+}
+
+// ---------- shell ----------
+async function boot(){
+  S.me = await api('/me');
+  if (S.me.role !== 'operator') S.tenant = S.me.tenant.id;
+  else if (S.tenant && !S.me.tenants.some(t => t.id === S.tenant)) S.tenant = '';
+  renderShell();
+  // a Oshi alert links straight to the decision: #hear-<receipt id> opens it on the Receipts page
+  const hear = /^#hear-(gwr_[0-9a-f]{8,64})$/.exec(location.hash || '');
+  if (hear) { go('receipts'); try { history.replaceState(null, '', '/console#receipts'); } catch(e) {} openReceipt(hear[1]).catch(e => toast(e.message)); }
+  else go(S.view);
+}
+function renderShell(){
+  const me = S.me, op = me.role === 'operator';
+  const roleLabel = op ? 'DeBacco Nexus operator' : me.role === 'reviewer' ? 'Reviewer, ' + me.tenant.name : 'Developer, ' + me.tenant.name;
+  const custSel = op ? '<select class="cust" id="cust" aria-label="Customer"><option value="">All customers</option>' + me.tenants.map(t => '<option value="' + esc(t.id) + '"' + (t.id === S.tenant ? ' selected' : '') + '>' + esc(t.name) + (t.revoked ? ' (revoked)' : '') + '</option>').join('') + '</select>' : '';
+  const nav = [['dashboard','Dashboard'],['tryit','Try it'],['holds','Holds'],['receipts','Receipts'],['rules','Rules'],['limits','Limits'],['alerts','Alerts'],['agents','Agents']].concat(op ? [['customers','Customers']] : []);
+  $('#app').innerHTML =
+    '<header class="top"><button class="btn navbtn" id="navBtn" aria-label="Open the menu" aria-expanded="false">&#9776; Menu</button><a class="brand" href="/console"><img src="/dn-mark.png" alt=""><div><div class="name"><span class="g5">Gov5</span> Gateway</div><div class="tag by">by DeBacco Nexus</div></div></a>' +
+    '<div class="sep"></div><div class="product">Console</div><div class="spacer"></div>' + custSel +
+    '<span class="pill">' + esc(roleLabel) + '</span>' + (me.role !== 'customer' ? '<button class="btn bad revoke-all" id="hdrRevoke" title="Every agent for the chosen customer loses its authority">REVOKE ALL AI AUTHORITY</button>' : '') + oshiToggle() + themeToggle() + '<button class="btn" id="so">Sign out</button></header>' +
+    '<div class="shell"><nav><div class="lbl">Console</div>' + nav.map(n => '<button data-go="' + n[0] + '">' + n[1] + (n[0] === 'holds' ? '<span class="count" id="hc" hidden></span>' : '') + '</button>').join('') + '</nav><main id="main"></main></div>';
+  $('#so').onclick = () => signOut();
+  bindOshiToggle();
+  // the emergency control lives in the header, two steps: arm, then confirm within 8 seconds
+  const hr = $('#hdrRevoke');
+  if (hr) hr.onclick = async () => {
+    if (!S.tenant && S.me.role === 'operator') return toast('Choose a customer at the top first.');
+    if (!hr.dataset.armed) { hr.dataset.armed = '1'; hr.textContent = 'Confirm enterprise containment'; hr.classList.add('armed'); clearTimeout(hr._t); hr._t = setTimeout(() => { delete hr.dataset.armed; hr.textContent = 'REVOKE ALL AI AUTHORITY'; hr.classList.remove('armed'); }, 8000); return; }
+    clearTimeout(hr._t); delete hr.dataset.armed; hr.disabled = true; hr.textContent = 'Revoking\u2026';
+    try {
+      const r = await api('/agents/stop-all', { method: 'POST', body: { tenant: S.tenant, by: S.me.role === 'reviewer' ? (S.me.tenant.name + ' reviewer') : undefined } });
+      toast(r.stopped + (r.stopped === 1 ? ' agent' : ' agents') + ' lost authority. ' + (r.frozen || 0) + ' pending actions frozen.');
+      if (S.view === 'agents') await agents(); if (r.receiptId) openReceipt(r.receiptId);
+    } catch(e) { toast(e.message); }
+    finally { hr.disabled = false; hr.textContent = 'REVOKE ALL AI AUTHORITY'; hr.classList.remove('armed'); }
+  };
+  if ($('#cust')) $('#cust').onchange = e => { S.tenant = e.target.value; store.set('gwc_tenant', S.tenant); go(S.view); };
+  document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { document.body.classList.remove('navopen'); go(b.dataset.go); });
+  // phone held upright: the menu slides in from the left; tap outside it or pick a page to close it
+  const nb = $('#navBtn'); if (nb) nb.onclick = () => { const o = document.body.classList.toggle('navopen'); nb.setAttribute('aria-expanded', o); };
+  document.addEventListener('click', e => { if (document.body.classList.contains('navopen') && !e.target.closest('nav') && !e.target.closest('#navBtn')) document.body.classList.remove('navopen'); });
+}
+function go(v){
+  S.view = v; document.querySelectorAll('[data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === v));
+  $('#main').innerHTML = '<p class="sub">Loading…</p>';
+  ({ dashboard, tryit, holds, receipts, rules, limits, alerts, agents, customers })[v]().catch(e => { if (e.message !== 'unauthorized') $('#main').innerHTML = '<div class="panel"><div class="empty">' + esc(e.message) + '</div></div>'; });
+  refreshHoldCount();
+}
+async function refreshHoldCount(){ try { const d = await api('/holds' + q()); const n = d.holds.filter(h => h.status === 'pending').length; const el = $('#hc'); if (el) { el.textContent = n; el.hidden = !n; } } catch(e) {} }
+const custName = () => { if (S.me.role !== 'operator') return S.me.tenant.name; const t = S.me.tenants.find(x => x.id === S.tenant); return t ? t.name : 'All customers'; };
+const footer = '<footer>Every request through the gateway is checked before it reaches the model and recorded in a signed receipt. Governedware&trade; &middot; Patent pending, U.S. 19/571,156</footer>';
+
+function receiptTable(rows, showCust){
+  if (!rows.length) return '<div class="empty">No receipts yet.</div>';
+  return '<div class="tbl"><table><thead><tr><th>Time</th>' + (showCust ? '<th>Customer</th>' : '') + '<th>Verdict</th><th>Model</th><th>Checks matched</th><th>Tokens in / out</th><th>Gate ms</th><th>Receipt</th></tr></thead><tbody>' +
+    rows.map(r => '<tr class="click" data-rcpt="' + esc(r.id) + '"><td>' + when(r.at) + '</td>' + (showCust ? '<td>' + esc(r.tenantName) + '</td>' : '') + '<td>' + vbadge(r.verdict) + '</td><td>' + esc(r.model || '–') + '</td><td>' +
+      (r.checksFailed.length ? r.checksFailed.map(c => '<span class="chip">' + esc(c) + '</span>').join('') : '<span class="note">none</span>') + '</td><td>' + fmt(r.tokensInput) + ' / ' + fmt(r.tokensOutput) + '</td><td>' + (r.gateMs == null ? '–' : r.gateMs) + '</td><td class="mono">' + esc(r.id.slice(0, 14)) + '…</td></tr>').join('') +
+    '</tbody></table></div>';
+}
+function bindReceiptRows(){ document.querySelectorAll('[data-rcpt]').forEach(tr => tr.onclick = () => openReceipt(tr.dataset.rcpt)); }
+
+// ---------- dashboard ----------
+async function dashboard(){
+  const d = await api('/summary' + q());
+  const sp = d.spend, spOn = sp && (sp.dailyUsd || sp.monthlyUsd);
+  $('#main').innerHTML = '<h1>Dashboard</h1><p class="sub">' + esc(custName()) + '. Counts come from the signed receipts the gateway issued.</p>' +
+    (spOn && sp.alert ? '<div class="alert' + (sp.over ? ' bad' : '') + '">' + (sp.over ? 'Spending cap reached. New requests are ' + 'held or refused until the cap resets or is raised.' : 'Spending alert: ' + sp.topPct + '% of the cap is used.') + ' See Limits.</div>' : '') +
+    savingsPanel(d.savings) + peoplePanel(d.people) +
+    '<div class="cards">' +
+      (spOn ? '<div class="card ' + (sp.over ? 'bad' : sp.alert ? 'warn' : 'ok') + '"><div class="n">' + (sp.dailyUsd ? usd(sp.dayUsd) : usd(sp.monthUsd)) + '</div><div class="k">' + (sp.dailyUsd ? 'Spent today of ' + usd(sp.dailyUsd) + ' cap' : 'Spent this month of ' + usd(sp.monthlyUsd) + ' cap') + '</div></div>' : '') +
+      '<div class="card teal"><div class="n">' + fmt(d.total) + '</div><div class="k">AI requests receipted' + (d.events ? '<br><span class="note">plus ' + fmt(d.events) + ' governance events (agents issued, revoked, contained)</span>' : '') + '</div></div>' +
+      '<div class="card ok"><div class="n">' + fmt(d.certified) + '</div><div class="k">Certified and forwarded' + (d.demoAnswered ? '<br><span class="note">' + fmt(d.demoAnswered) + ' answered by the demo stand-in; no AI model was called</span>' : '') + '</div></div>' +
+      '<div class="card bad"><div class="n">' + fmt(d.blocked) + '</div><div class="k">Blocked before the model</div></div>' +
+      '<div class="card warn"><div class="n">' + fmt(d.held) + '</div><div class="k">Held for review</div></div>' +
+      '<div class="card warn"><div class="n">' + fmt(d.pendingHolds) + '</div><div class="k">Waiting for a reviewer now</div></div>' +
+      '<div class="card"><div class="n">' + (d.medianGateMs == null ? '–' : d.medianGateMs + ' ms') + '</div><div class="k">Median gate time</div></div>' +
+      '<div class="card"><div class="n">' + fmt(d.tokensInput) + '</div><div class="k">Provider input tokens (measured)</div></div>' +
+      '<div class="card"><div class="n">' + fmt(d.tokensOutput) + '</div><div class="k">Provider output tokens (measured)</div></div>' +
+    '</div>' +
+    '<div class="panel"><h2>ECOS: Environmental Certification &amp; Oversight Standard</h2><div class="cards" style="padding:14px 16px 0;margin-bottom:0">' +
+      '<div class="card ok"><div class="n" style="font-size:22px">' + sig(d.ecos.energyJ) + ' J</div><div class="k">Energy (' + sig(d.ecos.energyJ / 3600) + ' Wh)</div></div>' +
+      '<div class="card ok"><div class="n" style="font-size:22px">' + sig(d.ecos.co2g) + ' g</div><div class="k">CO&#8322;e</div></div>' +
+      '<div class="card ok"><div class="n" style="font-size:22px">' + sig(d.ecos.waterMl) + ' mL</div><div class="k">Water (direct and power generation)</div></div>' +
+      '<div class="card ok"><div class="n" style="font-size:22px">' + usd(d.ecos.humanUsd) + '</div><div class="k">Human cost of the carbon (EPA $190/t)</div></div>' +
+      '<div class="card"><div class="n" style="font-size:22px">' + usd(d.ecos.listPriceUsd) + '</div><div class="k">Model cost at list price (reference)</div></div>' +
+      '<div class="card"><div class="n" style="font-size:22px">' + fmt(d.ecos.noModelRequests) + ' at 0 J</div><div class="k">Stopped before any model ran</div></div>' +
+    '</div><p class="note" style="padding:10px 16px 14px;margin:0">Standard ' + esc(d.ecos.current) + (d.ecos.regions.length ? ', grid ' + esc(d.ecos.regions.join(', ')) : '') + (d.ecos.standards.some(x => x !== d.ecos.current) ? '. Older receipts keep the standard they were signed under (' + esc(d.ecos.standards.filter(x => x !== d.ecos.current).join(', ')) + ')' : '') + '. ' + ECOS_NOTE + '</p></div>' +
+    '<div class="panel"><h2>Latest AI requests</h2>' + receiptTable(d.recent, S.me.role === 'operator' && !S.tenant) + '</div>' +
+    ((d.recentEvents || []).length ? '<div class="panel"><h2>Latest governance events</h2>' + receiptTable(d.recentEvents, S.me.role === 'operator' && !S.tenant) + '</div>' : '') +
+    '<p class="note">Last 24 hours: ' + fmt(d.last24h) + ' requests. Approvals recorded: ' + fmt(d.approvals) + '. Gate errors: ' + fmt(d.gateErrors) + '. Provider errors: ' + fmt(d.providerErrors) + '.</p>' + footer;
+  bindReceiptRows();
+}
+
+function roiMeter(r){
+  if (!r) return '<div class="roi"><div class="k">Return on investment</div><div class="note">Shows once the monthly fee is set under Limits.</div></div>';
+  const p = Math.min(100, r.pct), cls = r.paidBack ? 'ok' : r.pct >= 50 ? 'warn' : 'low';
+  return '<div class="roi"><div class="row"><div class="k">Return on investment, this month' + ((r.staffUsd || r.cacheUsd) ? ' (all savings)' : '') + '</div><div class="v ' + cls + '">' + (r.paidBack ? r.multiple + '&times; return' : r.pct + '% paid back') + '</div></div>' +
+    '<div class="gauge"><i class="' + cls + '" style="width:' + p + '%"></i><span class="mark" title="Paid back"></span></div>' +
+    '<div class="row note"><span>Saved ' + usd(r.savedUsd) + ((r.staffUsd || r.cacheUsd) ? ' (stopped requests ' + usd(r.modelUsd) + (r.cacheUsd ? ' + repeat-reading discount ' + usd(r.cacheUsd) : '') + (r.staffUsd ? ' + staff time ' + usd(r.staffUsd) : '') + ')' : '') + '</span><span>Fee ' + usd(r.feeUsd) + (r.paidBack ? ' &middot; paid back' : '') + '</span></div></div>';
+}
+function peoplePanel(v){
+  if (!v) return '';
+  const m = v.month, card = (cls, n, k) => '<div class="card ' + cls + '"><div class="n" style="font-size:24px">' + n + '</div><div class="k">' + k + '</div></div>';
+  const trade = v.staffSet
+    ? '<div class="trade">This month your team spent <b>' + fmt(m.judgmentHours) + ' hours</b> on decisions that needed a person, and got <b>' + fmt(m.handedBackHours) + ' hours</b> back from routine checking.</div>'
+    : '<div class="trade">Add your staff-time numbers under Limits to see the trade: hours spent on decisions that needed a person, and hours handed back from routine checking.</div>';
+  return '<div class="panel people"><h2>People in charge</h2>' +
+    '<p class="note" style="padding:12px 16px 0;margin:0;max-width:80ch">Governedware does not replace people. Every risky AI action waits for a person, and every decision carries that person\'s name and reason on a signed receipt.</p>' +
+    '<div class="cards" style="padding:14px 16px 0;margin-bottom:0">' +
+      card('teal', fmt(m.decisions), 'Decisions made by people this month') +
+      card('ok', fmt(m.approved), 'Approved by a person') +
+      card('bad', fmt(m.denied), 'Denied by a person: proof nothing was waved through') +
+      card('warn', fmt(m.waited), 'Requests and AI actions that waited for a person' + (m.moneyWaited ? ' (' + fmt(m.moneyWaited) + (m.moneyWaited === 1 ? ' money move)' : ' money moves)') : '')) +
+      card('teal', fmt(m.reviewers), (m.reviewers === 1 ? 'Person' : 'People') + ' who made those decisions, by name') +
+    '</div>' + trade +
+    '<p class="note" style="padding:10px 16px 14px;margin:0">All time: ' + fmt(v.all.decisions) + ' decisions by ' + fmt(v.all.reviewers) + ' ' + (v.all.reviewers === 1 ? 'person' : 'people') + '. Counted from signed receipts, shown as they are. What your organization does with the hours handed back is its own choice.</p></div>';
+}
+function savingsPanel(v){
+  if (!v) return '';
+  const card = (cls, n, k) => '<div class="card ' + cls + '"><div class="n" style="font-size:24px">' + n + '</div><div class="k">' + k + '</div></div>';
+  const money = v.moneyHeld ? fmt(v.moneyHeld) + ' held' + (v.moneyDenied ? ', ' + fmt(v.moneyDenied) + ' denied' : '') : '0';
+  return '<div class="panel savings"><h2>Savings: what the gateway stopped</h2>' +
+    '<div class="big"><div><div class="n">' + (v.priced || v.all.usd ? usd(v.all.usd) : '–') + '</div><div class="k">Model cost avoided, all time</div></div>' +
+      '<div><div class="n">' + (v.priced || v.month.usd ? usd(v.month.usd) : '–') + '</div><div class="k">This month</div></div>' +
+      '<div><div class="n">' + fmt(v.all.stopped) + '</div><div class="k">Requests stopped before any model ran</div></div></div>' +
+    roiMeter(v.roi) +
+    '<div class="cards" style="padding:0 16px;margin-bottom:0">' +
+      card('ok', usd(v.month.cacheUsd), 'Repeat-reading discount this month (' + fmt(v.month.cacheRequests) + ' requests, switched on by the gateway)') +
+      card('warn', fmt(v.capStops), 'Stopped at the spending cap') +
+      card('warn', fmt(v.loopStops), 'Runaway loops caught') +
+      card('bad', money, 'Money actions by the AI, stopped for a person') +
+      (v.staffSet ? card('ok', fmt(v.month.netHours) + ' h', 'Staff hours saved this month (' + fmt(v.month.hoursAvoided) + ' h of hand checks avoided, ' + fmt(v.month.hoursSpent) + ' h reviewing holds)') +
+        card('ok', usd(v.month.staffUsd), 'Value of that staff time this month') :
+        card('', fmt(v.month.checked), 'AI answers checked automatically this month. Add your staff-time numbers under Limits to see hours saved')) +
+      card('ok', sig(v.all.energyJ) + ' J', 'Energy avoided (' + sig(v.all.energyJ / 3600) + ' Wh)') +
+      card('ok', sig(v.all.co2g) + ' g', 'CO&#8322;e avoided') +
+      card('ok', sig(v.all.waterMl) + ' mL', 'Water avoided') +
+      card('', 'Pilot', 'Further waste cut by our patented method: measured on your traffic in the pilot') +
+    '</div><p class="note" style="padding:10px 16px 14px;margin:0">Each stopped request is priced at ' + (v.medianUsd != null ? 'this customer\'s median measured request, ' + usd(v.medianUsd) + ',' : 'each customer\'s own median measured request') +
+      ' at the provider\'s list price' + (v.staffSet ? '. Staff hours use your own numbers: minutes to check one AI answer by hand, minutes per hold review, and your hourly staff cost' : '') + (v.basisRequests ? ', from ' + fmt(v.basisRequests) + ' certified requests' : '') + '. An estimate from your own traffic; your provider\'s invoice is the final word.' + (v.priced ? '' : ' A customer with no certified requests yet is not priced.') + '</p></div>';
+}
+
+// ---------- holds ----------
+async function holds(){
+  const d = await api('/holds' + q()), me = S.me, rev = me.role === 'reviewer';
+  const pend = d.holds.filter(h => h.status === 'pending'), done = d.holds.filter(h => h.status !== 'pending');
+  const card = h => '<div class="hold"><div class="head">' + vbadge(h.status) + '<b class="mono">' + esc(h.id) + '</b>' + (me.role === 'operator' && !S.tenant ? '<span class="pill">' + esc(h.tenantName) + '</span>' : '') +
+      '<span class="note">Opened ' + when(h.openedAt) + (h.model ? ' &middot; ' + esc(h.model) : '') + '</span></div>' +
+      '<div>' + (h.triggered || []).map(t => '<span class="chip" title="' + esc(t.id) + '">' + esc(t.label) + '</span>').join('') + '</div>' +
+      (h.status === 'pending' && h.review ? '<p class="note"><b>Full review requested</b> by ' + esc(h.review.by) + ' on ' + when(h.review.at) + '. Nothing moves until it is decided here.</p>' : '') +
+      (h.status === 'pending'
+        ? (rev ? (h.kind === 'action' ? '<p><b>' + (h.subkind === 'source' ? 'Check these before the answer is released:' : 'The AI tried to do this:') + '</b></p>' + (h.action ? h.action.map(a => '<div class="prompt"><b class="mono">' + esc(a.name) + '</b>\n' + esc(typeof a.input === 'string' ? prettyArgs(a.input) : JSON.stringify(a.input, null, 2)) + '</div>').join('') : '<p class="locked">The action is not available for this hold.</p>') + '<p><b>In answer to:</b></p>' : '') + (h.prompt != null ? '<div class="prompt">' + esc(h.prompt) + '</div><p class="note">This text is stored encrypted only while it waits for you, and is deleted when you decide.</p>' : '<p class="locked">The held text is not available for this hold.</p>') +
+            '<div class="decide"><input placeholder="Your name" data-n="' + esc(h.id) + '"><input placeholder="Reason for your decision" data-r="' + esc(h.id) + '"><button class="btn ok" data-dec="approve" data-h="' + esc(h.id) + '">Approve</button><button class="btn bad" data-dec="deny" data-h="' + esc(h.id) + '">Deny</button></div>' +
+            '<p class="note">' + (h.kind === 'action' ? 'Approval releases this exact answer once, with no new model call. ' : 'Approval lets the same request through once, from the same key. ') + 'The sender resends it with the header x-governance-hold-id: ' + esc(h.id) + '.</p>'
+          : '<p class="locked">Only ' + esc(h.tenantName) + '\'s reviewer can read this request and decide it. Issue them a reviewer key under Customers.</p>')
+        : '<div class="note">' + esc(VERDICT_LABEL[h.status] || h.status) + ' by ' + esc(h.approver || '–') + ' on ' + when(h.decidedAt) + '. Reason: ' + esc(h.reason || '–') + (h.used ? '. The approved request has been sent.' : '') + '</div>') +
+    '</div>';
+  $('#main').innerHTML = '<h1>Holds</h1><p class="sub">Requests the gateway stopped for a person before they reached the model, and AI answers that tried to move money or set a price before they reached your systems. ' + esc(custName()) + '.</p>' +
+    '<div class="panel"><h2>Waiting for review (' + pend.length + ')</h2>' + (pend.length ? pend.map(card).join('') : '<div class="empty">Nothing is waiting for review.</div>') + '</div>' +
+    '<div class="panel"><h2>Decided (' + done.length + ')</h2>' + (done.length ? done.slice(0, 50).map(card).join('') : '<div class="empty">No decisions yet.</div>') + '</div>' + footer;
+  document.querySelectorAll('[data-dec]').forEach(b => b.onclick = async () => {
+    const id = b.dataset.h, name = document.querySelector('[data-n="' + id + '"]').value.trim(), reason = document.querySelector('[data-r="' + id + '"]').value.trim();
+    if (!name || !reason) return toast('Enter your name and a reason first.');
+    b.disabled = true;
+    try { const r = await api('/holds/' + encodeURIComponent(id) + '/decide', { method: 'POST', body: { decision: b.dataset.dec, approver: name, reason } }); toast((r.status === 'approved' ? 'Approved' : 'Denied') + '. Receipt ' + r.receiptId.slice(0, 14) + '…'); holds(); refreshHoldCount(); }
+    catch(e) { b.disabled = false; toast(e.message); }
+  });
+}
+
+// ---------- receipts ----------
+let rq = { q: '', verdict: '' };
+async function receipts(){
+  const d = await api('/receipts' + qa('limit=300&q=' + encodeURIComponent(rq.q) + '&verdict=' + encodeURIComponent(rq.verdict)));
+  $('#main').innerHTML = '<h1>Receipts</h1><p class="sub">Every request is recorded in a signed receipt. Open one to check its signature or download it for an auditor. ' + esc(custName()) + '.</p>' +
+    '<div class="panel"><div class="toolbar"><input id="rqq" placeholder="Search receipt, hold, provider message ID, model or check" value="' + esc(rq.q) + '">' +
+    '<select id="rqv"><option value="">All verdicts</option>' + ['CERTIFIED','NO','WAIT','GO','GATE_ERROR','PROVIDER_ERROR'].map(v => '<option value="' + v + '"' + (rq.verdict === v ? ' selected' : '') + '>' + VERDICT_LABEL[v] + '</option>').join('') + '</select>' +
+    '<button class="btn primary" id="whySet">Why these?</button><a class="btn" href="/console/api/public-key" target="_blank" rel="noopener">Public signing key</a></div><div id="whySetBox" style="padding:0 16px"></div>' +
+    receiptTable(d.receipts, S.me.role === 'operator' && !S.tenant) + '<div class="note" style="padding:10px 16px">' + fmt(d.total) + ' receipts' + (d.total > d.receipts.length ? ', newest ' + d.receipts.length + ' shown' : '') + '.</div></div>' + footer;
+  let t; $('#rqq').oninput = e => { clearTimeout(t); t = setTimeout(() => { rq.q = e.target.value; receipts().then(() => { const i = $('#rqq'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }); }, 300); };
+  $('#rqv').onchange = e => { rq.verdict = e.target.value; receipts(); };
+  $('#whySet').onclick = () => fillWhySet({ verdict: rq.verdict }, $('#whySetBox'));
+  bindReceiptRows();
+}
+function ecosPanel(r){
+  const e = r.ecos;
+  if (!e) return '<div class="panel"><h2>ECOS: Environmental Certification &amp; Oversight Standard</h2><div class="kv"><div>Energy</div><div>' + sig(r.energy_consumed_joules_low) + ' to ' + sig(r.energy_consumed_joules_high) + ' J</div><div>Method</div><div>' + esc(r.environmental_method || '–') + ' (signed before ECOS-2026.4; kept as signed)</div></div></div>';
+  const g = e.governed, p = e.planet || {};
+  return '<div class="panel"><h2>ECOS: Environmental Certification &amp; Oversight Standard</h2><div class="kv">' +
+      (e.modelRan
+        ? '<div>Energy</div><div><b>' + sig(g.energy_j) + ' J</b> (' + sig(g.energy_wh) + ' Wh)</div><div>CO&#8322;e</div><div><b>' + sig(g.co2_g) + ' g</b></div>' +
+          '<div>Water</div><div><b>' + sig(g.water_ml) + ' mL</b> (direct cooling and power generation)</div><div>Human cost of the carbon</div><div>' + usd(g.human_usd) + ' (EPA social cost, $' + esc(e.constants.socialCostUsdPerTonCo2) + ' per ton)</div>' +
+          '<div>Model cost at list price</div><div>' + (e.listPriceUsd == null ? 'Not published for this provider' : usd(e.listPriceUsd) + ' (reference; your provider bill is the authority)') + '</div>' +
+          '<div>Based on</div><div>' + fmt(e.tokens.input) + ' input and ' + fmt(e.tokens.output) + ' output tokens, ' + esc(e.tokens.source) + '</div>'
+        : '<div>Energy</div><div><b>0 J.</b> The gate stopped this request before any model ran.</div>') +
+      '<div>Region and grid</div><div>' + esc(e.region.name) + ', ' + esc(e.region.gridKgCo2PerKwh) + ' kg CO&#8322;e per kWh<div class="note">' + esc(e.region.gridSource) + '</div></div>' +
+      (p.graceFo ? '<div>NASA GRACE-FO</div><div>' + esc(p.graceFo.region) + ': ' + esc(p.graceFo.waterStorageCmEWT) + ' cm water storage change<div class="note">' + esc(p.graceFo.dataset) + ', ' + esc(p.graceFo.period) + ', ' + esc(p.graceFo.retrieval) + '</div></div>' : '') +
+      (p.noaaCo2 ? '<div>NOAA atmospheric CO&#8322;</div><div>' + esc(p.noaaCo2.ppm) + ' ppm (' + esc(p.noaaCo2.period) + ')<div class="note">' + esc(p.noaaCo2.dataset) + ', ' + esc(p.noaaCo2.retrieval) + '</div></div>' : '') +
+      '<div>Standard</div><div>' + esc(e.standard) + '</div>' +
+      '<div>Governed vs ungoverned</div><div>' + esc(e.ungoverned.reason) + '</div>' +
+    '</div>' +
+    (e.stages.length ? '<div class="tbl"><table><thead><tr><th>Model call</th><th>Tokens in / out</th><th>Coefficients</th><th>Energy</th></tr></thead><tbody>' + e.stages.map(st => '<tr><td>' + esc(st.model || '–') + '<div class="note">' + esc(st.stage) + ', ' + fmt(st.calls) + ' call' + (st.calls === 1 ? '' : 's') + '</div></td><td>' + fmt(st.input) + ' / ' + fmt(st.output) + '</td><td class="note">' + esc(st.coefficients) + '</td><td>' + sig(st.energy_j) + ' J</td></tr>').join('') + '</tbody></table></div>' : '') +
+    '<div class="tbl"><table><thead><tr><th>Planetary vital sign</th><th>What this request adds</th><th>Link</th><th>Monitored by</th></tr></thead><tbody>' +
+      e.nasaVitals.map(v => '<tr><td>' + esc(v.vital) + '</td><td>' + sig(v.amount) + ' ' + esc(v.unit) + '</td><td>' + esc(v.tier.charAt(0) + v.tier.slice(1).toLowerCase()) + '</td><td class="note">' + esc(v.monitoredBy) + '</td></tr>').join('') +
+    '</tbody></table></div>' +
+    '<p class="note" style="padding:10px 16px 0;margin:0">' + esc(e.disclosure) + ' These figures are inside the signed receipt.</p>' +
+    '<p class="note" style="padding:6px 16px 14px;margin:0">Sources: ' + e.sources.map(x => x.url ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.source) + '</a>' : esc(x.source)).join('; ') + '.</p></div>';
+}
+function plainWho(label){
+  const l = String(label || ''); let m;
+  if ((m = /^Agent (.+?) acting for (.+?) under handoff/.exec(l))) return 'AI agent "' + m[1] + '", working for ' + m[2];
+  if ((m = /^Agent (.+?) acting for (.+)$/.exec(l))) return 'AI agent "' + m[1] + '", working for ' + m[2];
+  if ((m = /^Tenant (.+?) \(gateway API key verified\)/.exec(l))) return 'An AI agent using ' + m[1] + '\'s gateway key (verified)';
+  if ((m = /^Tenant (.+)$/.exec(l))) return 'An AI agent using ' + m[1] + '\'s gateway key';
+  return l || '–';
+}
+function plainCard(d){
+  const p = d.plain; if (!p) return '';
+  const row = (k, v) => '<div class="pk">' + k + '</div><div class="pv">' + esc(v) + '</div>';
+  return '<div class="plain" aria-label="This receipt in plain words">' +
+    row('What happened', p.what) + row('Who asked', p.asked) + row('What Oshi did', p.did) + row('Who decided', p.decided) +
+    '<div class="pk">Can you trust this receipt?</div><div class="pv"><span class="v ' + (p.trustOk ? 'CERTIFIED' : 'NO') + '">' + (p.trustOk ? '&#10003; ' : '&#10007; ') + esc(p.trust) + '</span></div></div>';
+}
+function humanRows(r){
+  const h = r.hold || {}, hist = h.history || [], opened = (hist.find(x => x.event === 'WAIT') || {}).at, by = String(h.approver || '');
+  const how = /by phone/.test(by) ? 'Phone call from Oshi' + (/PIN verified|approval code verified/.test(by) ? ', PIN verified' : '') : 'Gov5 Gateway Console';
+  const conv = hist.filter(x => x.event === 'CONVERSATION'), rev = hist.filter(x => x.event === 'REVIEW');
+  const secs = opened && h.decidedAt ? Math.max(0, Math.round((new Date(h.decidedAt) - new Date(opened)) / 1000)) : null;
+  const dur = secs == null ? '–' : secs < 90 ? secs + ' seconds' : Math.round(secs / 60) + ' minutes';
+  return '<div>Record type</div><div><b>A person\'s decision</b> on a held AI request. No AI ran for this receipt.</div>' +
+    '<div>Decision</div><div><b>' + esc(h.status === 'approved' ? 'Approved' : 'Denied') + '</b></div>' +
+    '<div>Decided by</div><div>' + esc(by.replace(/\s*\((by phone[^)]*|reviewer key[^)]*)\)\s*$/, '') || '–') + '</div>' +
+    '<div>How</div><div>' + esc(how) + '</div>' +
+    '<div>Reason given</div><div>' + esc(h.reason || '–') + '</div>' +
+    '<div>Hold</div><div class="mono">' + esc(h.id || '–') + '</div>' +
+    '<div>Held at</div><div>' + (opened ? when(opened) : '–') + '</div>' +
+    '<div>Decided at</div><div>' + (h.decidedAt ? when(h.decidedAt) : '–') + '</div>' +
+    '<div>Time to decide</div><div>' + dur + '</div>' +
+    '<div>What was held</div><div>' + ((h.triggered || []).map(t => esc(t.label)).join('; ') || '–') + '</div>' +
+    '<div>Original requester</div><div>' + esc(plainWho(r.requester && r.requester.label)) + '</div>' +
+    (rev.length ? '<div>Full review requested</div><div>' + rev.map(x => esc(x.by) + ', ' + when(x.at)).join('<br>') + '</div>' : '') +
+    (conv.length ? '<div>Conversation with Oshi</div><div>' + conv.map(x => fmt(x.questions) + (x.questions === 1 ? ' question' : ' questions') + (x.refused ? ', ' + fmt(x.refused) + ' declined by Oshi' : '') + ' &middot; sealed <span class="mono">' + esc(String(x.conversationHash || '').slice(0, 16)) + '&hellip;</span>').join('<br>') + '</div>' : '') +
+    '<div>Released to caller</div><div>' + (h.status === 'approved' ? 'Not yet. The approved request goes through once, when the agent resends it.' : 'No. Nothing was sent.') + '</div>';
+}
+async function openReceipt(id){
+  const d = await api('/receipts/' + encodeURIComponent(id)), r = d.receipt || {}, v = d.verification;
+  const ok = (b, yes, no) => '<span class="v ' + (b ? 'CERTIFIED' : 'NO') + '">' + (b ? '&#10003; ' + yes : '&#10007; ' + no) + '</span>';
+  const ids = (r.provider_ids || []).map(p => esc(p.messageId || '–') + (p.requestId ? ' / ' + esc(p.requestId) : '')).join('<br>') || '–';
+  // a person's decision on a hold gets its own receipt: show the decision, not empty AI fields
+  const human = !!(r.hold && (r.hold.status === 'approved' || r.hold.status === 'denied') && !r.model_calls);
+  const el = document.createElement('div'); el.className = 'drawer';
+  el.innerHTML = '<div class="in" role="dialog" aria-label="Receipt"><div style="display:flex;align-items:center;gap:10px"><h1 style="margin:0">Receipt</h1>' + vbadge(r.verdict) + '<div class="spacer"></div><button class="btn" data-x>Close</button></div>' +
+    '<div class="mono" style="color:var(--muted);margin-top:4px">' + esc(d.id) + '</div>' +
+    plainCard(d) +
+    ((d.related || []).length > 1 ? '<div class="plainrel">This hold\'s receipts: ' + d.related.map(x => (x.id === d.id ? '<b>' + esc(x.role) + '</b>' : '<a href="#" data-rel="' + esc(x.id) + '">' + esc(x.role) + '</a>')).join(' &rarr; ') + '</div>' : '') +
+    '<div id="whyBox"><div class="why"><div class="k">Why</div><div class="note">Reading the sealed receipt&hellip;</div></div></div>' +
+    '<details class="proof"><summary>Show the proof</summary>' +
+    '<div class="verify">' + ok(v.hashOk, 'Contents match the hash', 'Contents do not match the hash') + ok(v.signatureOk, 'Ed25519 signature valid', 'Signature invalid') + ok(v.signedByThisGateway, 'Signed by this gateway', 'Not signed by this gateway\'s key') + '</div>' +
+    '<div class="panel"><div class="kv">' +
+      '<div>Customer</div><div>' + esc(d.tenantName) + '</div><div>Time</div><div>' + when(r.timestamp) + '</div>' +
+      (human ? humanRows(r)
+        : '<div>Requester</div><div>' + esc(r.requester && r.requester.label || '–') + '</div><div>Model</div><div>' + esc(r.model || '–') + '</div>' +
+      '<div>Released to caller</div><div>' + (r.released ? 'Yes' : 'No') + '</div><div>Model calls</div><div>' + fmt(r.model_calls) + '</div>' +
+      '<div>Provider message / request</div><div class="mono">' + ids + '</div>' +
+      '<div>Tokens (provider measured)</div><div>' + fmt(r.tokens_input) + ' in, ' + fmt(r.tokens_output) + ' out</div>' +
+      '<div>Gate / total time</div><div>' + (r.gate_duration_ms == null ? '–' : r.gate_duration_ms + ' ms') + ' / ' + (r.total_duration_ms == null ? '–' : r.total_duration_ms + ' ms') + '</div>') +
+      '<div>Prompt hash</div><div class="mono">' + esc(r.prompt_hash || '–') + '</div><div>Output hash</div><div class="mono">' + esc(r.output_hash || '–') + '</div>' +
+      '<div>Previous receipt in chain</div><div class="mono">' + esc(r.chain && r.chain.prevReceiptHash || 'first in chain') + '</div>' +
+      '<div>This receipt\'s hash</div><div class="mono">' + esc(d.receiptHash) + '</div>' +
+      (r.hold && !human ? '<div>Hold</div><div>' + esc(r.hold.id) + ', ' + esc(r.hold.status) + (r.hold.approver ? ', by ' + esc(r.hold.approver) : '') + '</div>' : '') +
+      (r.note ? '<div>Note</div><div>' + esc(r.note) + '</div>' : '') +
+    '</div></div>' +
+    ecosPanel(r) +
+    '<div class="panel"><h2>Checks</h2><div class="tbl"><table><thead><tr><th>Check</th><th>Stage</th><th>Policy</th><th>Result</th></tr></thead><tbody>' +
+      (r.checks || []).map(c => '<tr><td>' + esc(c.label) + (c.resolvedBy ? '<div class="note">Resolved by ' + esc(c.resolvedBy) + (c.approver ? ', ' + esc(c.approver) : '') + '</div>' : '') + (c.policyNote ? '<div class="note">' + esc(c.policyNote) + '</div>' : '') + '</td><td>' + esc(c.stage || '–') + '</td><td>' + esc(ACTION_LABEL[c.action] || c.action || '–') + '</td><td>' +
+        '<span class="v ' + (c.result === 'pass' ? 'CERTIFIED' : c.result === 'fail' ? 'NO' : 'other') + '">' + esc(c.result) + '</span></td></tr>').join('') +
+    '</tbody></table></div></div>' +
+    '<div class="panel"><h2 style="display:flex;align-items:center">Signed record<span class="spacer"></span><button class="btn" data-dl>Download JSON</button></h2><pre class="json mono">' + esc(JSON.stringify(r, null, 2)) + '</pre></div>' +
+    '<div class="panel"><h2>Scan to verify</h2><div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:16px">' +
+      '<img src="' + esc(d.qrPath) + '" alt="QR code with the Gov5 seal that opens this receipt\'s public check page" style="width:180px;height:180px;border-radius:8px;background:#fff;padding:6px;border:1px solid var(--line)">' +
+      '<div style="flex:1;min-width:220px"><p style="margin:0 0 6px">Anyone can scan this to check the receipt is genuine. The public page shows the verdict, time, checks, ECOS figures and signature status, never the customer, the prompt or the provider IDs.</p>' +
+      '<div class="mono" style="word-break:break-all;color:var(--muted)">' + esc(d.verifyUrl) + '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><a class="btn" href="' + esc(d.verifyUrl) + '" target="_blank" rel="noopener">Open check page</a><a class="btn" href="' + esc(d.qrPath) + '" download="' + esc(d.id) + '-qr.svg">Download QR</a></div></div></div></div>' +
+    '<p class="note">To verify independently: the SHA-256 of the signed payload must equal the receipt hash, and the Ed25519 signature must verify against the gateway\'s <a href="/console/api/public-key" target="_blank" rel="noopener">public key</a>. The download contains the exact payload, hash, signature and key.</p></details></div>';
+  document.body.appendChild(el);
+  fillWhy(d.id, el.querySelector('#whyBox'));
+  const close = () => { oshiStop(); el.remove(); };
+  el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) close(); };
+  el.querySelectorAll('[data-rel]').forEach(x => x.onclick = ev => { ev.preventDefault(); close(); openReceipt(x.dataset.rel); });
+  el.querySelector('[data-dl]').onclick = () => {
+    const blob = new Blob([JSON.stringify({ receiptId: d.id, verifyUrl: d.verifyUrl, payload: d.payload, receiptHash: d.receiptHash, signature: d.signature, publicKey: d.publicKey }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = d.id + '.json'; document.body.appendChild(a); a.click(); a.remove();
+  };
+}
+
+// ---------- THE WHY: Oshi, the Voice of AI Trust, tells you why each decision was made, read from the sealed receipt ----------
+const OSHI = { on: store.get('gwc_oshi') === 'on', level: Number(store.get('gwc_oshi_lvl') || 0), ctx: null, src: null, el: null };
+const OSHI_GAIN = [1, 1.7, 2.4], OSHI_LVL = ['Voice', 'Louder', 'Loudest'];
+function oshiToggle(){
+  return '<div class="oshiv" role="group" aria-label="Oshi explains out loud"><button id="oshiOn" class="' + (OSHI.on ? 'on' : '') + '" aria-pressed="' + OSHI.on + '">Oshi explains: ' + (OSHI.on ? 'On' : 'Off') + '</button>' +
+    '<button id="oshiLvl" ' + (OSHI.on ? '' : 'hidden') + ' title="How loud Oshi speaks">' + OSHI_LVL[OSHI.level] + '</button></div>';
+}
+function bindOshiToggle(){
+  const on = document.getElementById('oshiOn'), lv = document.getElementById('oshiLvl'); if (!on) return;
+  on.onclick = () => { OSHI.on = !OSHI.on; store.set('gwc_oshi', OSHI.on ? 'on' : 'off'); on.className = OSHI.on ? 'on' : ''; on.setAttribute('aria-pressed', OSHI.on); on.textContent = 'Oshi explains: ' + (OSHI.on ? 'On' : 'Off'); lv.hidden = !OSHI.on; if (!OSHI.on) oshiStop(); else { oshiUnlock(); toast('Oshi will explain each decision out loud.'); } };
+  lv.onclick = () => { OSHI.level = (OSHI.level + 1) % 3; store.set('gwc_oshi_lvl', OSHI.level); lv.textContent = OSHI_LVL[OSHI.level]; };
+}
+function oshiUnlock(){ try { if (!OSHI.ctx) OSHI.ctx = new (window.AudioContext || window.webkitAudioContext)(); OSHI.ctx.resume(); } catch(e) {} }
+function oshiStop(){ try { if (OSHI.src) OSHI.src.stop(); } catch(e) {} OSHI.src = null; if (OSHI.el) OSHI.el.classList.remove('speaking'); OSHI.el = null; oshiCaption(null); }
+function oshiCaption(t, pcc){ let c = document.getElementById('oshiCap'); if (!t) { if (c) c.remove(); return; } if (!c) { c = document.createElement('div'); c.id = 'oshiCap'; c.className = 'oshicap'; c.setAttribute('aria-live', 'polite'); document.body.appendChild(c); } const mini = store.get('gwc_capmin') === '1'; c.classList.toggle('min', mini);
+  c.innerHTML = '<b>Oshi</b><span class="t">' + esc(t) + '</span>' + (pcc ? '<span class="mono pcc">sealed in PCC #' + fmt(pcc.seq) + '</span>' : '') + '<button class="capmin" type="button" aria-label="' + (mini ? 'Show all of Oshi\'s words' : 'Make Oshi\'s words one line') + '">' + (mini ? 'More' : 'Less') + '</button>';
+  c.querySelector('.capmin').onclick = () => { store.set('gwc_capmin', mini ? '0' : '1'); oshiCaption(t, pcc); }; if (typeof lhSpoken === 'function') setTimeout(lhSpoken, 300); }
+async function oshiSay(body, el, btn, label, silent){
+  oshiStop(); oshiUnlock();
+  if (btn) { btn.disabled = true; btn.textContent = 'Oshi is getting ready...'; }
+  try {
+    const d = await api('/why/voice', { method: 'POST', body: Object.assign({ tenant: S.tenant }, body) });
+    if (!d.audio) throw new Error(d.error || 'Oshi could not speak just now.');
+    const raw = atob(d.audio), arr = new Uint8Array(raw.length); for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+    const buf = await OSHI.ctx.decodeAudioData(arr.buffer);
+    const src = OSHI.ctx.createBufferSource(), g = OSHI.ctx.createGain(); g.gain.value = OSHI_GAIN[OSHI.level];
+    src.buffer = buf; src.connect(g); g.connect(OSHI.ctx.destination); src.start();
+    OSHI.src = src; OSHI.el = el; if (el) el.classList.add('speaking');
+    oshiCaption(d.text, d.pcc);
+    src.onended = () => { if (OSHI.src === src) oshiStop(); };
+  } catch(e) { if (!silent || !LHL.warned) { if (silent) LHL.warned = true; toast(e.message === 'unauthorized' ? 'Sign in again.' : e.message); } }
+  finally { if (btn) { btn.disabled = false; btn.textContent = label || 'Hear Oshi explain'; } }
+}
+const WHY_MARK = { pass: ['pass', '&#10003;'], fail: ['stop', '&#10007;'], flagged: ['flag', '!'], review: ['flag', '!'], unavailable: ['flag', '?'], unverified: ['flag', '?'] };
+async function fillWhy(id, box){
+  if (!box) return;
+  try {
+    const w = await api('/why/receipt/' + encodeURIComponent(id) + q());
+    box.innerHTML = '<div class="why"><div class="k">Why &middot; the reason, read from the sealed receipt</div><h2>' + esc(w.headline) + '</h2>' +
+      '<div class="who">' + esc(plainWho(w.who)) + (w.at ? ' &middot; ' + when(w.at) : '') + ' &middot; ' + fmt(w.modelCalls) + (w.modelCalls === 1 ? ' AI model call' : ' AI model calls') + '</div>' +
+      '<ol class="path" aria-label="The logic path, in the order the checks ran">' + w.path.map(p => {
+        const m = p.approvedBy ? ['ok', '&#10003;'] : p.mark === 'flag' && p.result === 'fail' ? ['flag', '!'] : (WHY_MARK[p.result] || ['', '&middot;']);
+        return '<li class="' + m[0] + '"><span class="dot" aria-hidden="true">' + m[1] + '</span><div><div class="t">' + esc(p.label) + ' <span class="note">' + esc(p.approvedBy ? 'approved by ' + p.approvedBy.by : p.said) + '</span></div>' +
+          '<div class="d">' + esc(p.stage) + (p.approvedBy && p.approvedBy.reason ? ' &middot; "' + esc(p.approvedBy.reason) + '"' : p.detail ? ' &middot; ' + esc(p.detail) : '') + '</div></div></li>';
+      }).join('') + '<li class="' + (['CERTIFIED','GO','RELEASED_FOR_REVIEW','RELEASED_UNVERIFIED','HANDOFF'].includes(w.verdict) ? 'pass' : w.verdict === 'WAIT' ? 'flag' : 'stop') + '"><span class="dot" aria-hidden="true">&#9679;</span><div><div class="t">Decision: ' + esc(VERDICT_LABEL[w.verdict] || w.verdict) + '</div>' +
+        (w.person ? '<div class="d">' + esc(w.person.by) + ' ' + esc(w.person.decision) + ' it' + (w.person.reason ? ': "' + esc(w.person.reason) + '"' : '') + '</div>' : '') + '</div></li></ol>' +
+      '<div class="acts"><button class="btn primary" data-say>Hear Oshi explain</button></div>' +
+      '<div class="seal">' + (w.pcc ? 'Sealed in your PCC chain, entry ' + fmt(w.pcc.seq) + ', ' + when(w.pcc.sealedAt) + '. ' + (w.pcc.matches ? '&#10003; This reason matches the one sealed when the decision was made.' : '&#10007; This reason does not match what was sealed.') + ' <span class="mono">' + esc(w.pcc.hash.slice(0, 16)) + '&hellip;</span>'
+        : 'This decision was made before the PCC chain was switched on, so its reason is read from the signed receipt alone.') + '</div></div>';
+    const btn = box.querySelector('[data-say]');
+    btn.onclick = () => oshiSay({ receiptId: id }, box.firstChild, btn);
+    if (OSHI.on) oshiSay({ receiptId: id }, box.firstChild, btn);
+  } catch(e) { box.innerHTML = '<div class="why"><div class="k">Why</div><div class="note">' + esc(e.message) + '</div></div>'; }
+}
+async function fillWhySet(opts, box){
+  if (!box) return;
+  box.innerHTML = '<div class="why"><div class="k">Why</div><div class="note">Reading the sealed receipts&hellip;</div></div>';
+  const qs = 'limit=200' + (opts.agent ? '&agent=' + encodeURIComponent(opts.agent) : '') + (opts.verdict ? '&verdict=' + encodeURIComponent(opts.verdict) : '');
+  try {
+    const w = await api('/why' + qa(qs));
+    box.innerHTML = '<div class="why"><div class="k">Why &middot; ' + esc(opts.agent ? 'Agent ' + opts.agent : opts.verdict ? (VERDICT_LABEL[opts.verdict] || opts.verdict) : 'the latest decisions') + '</div>' +
+      '<h2>' + fmt(w.count) + (w.count === 1 ? ' decision' : ' decisions') + ', read from sealed receipts</h2>' +
+      '<div class="stats"><span>' + fmt(w.passed) + ' passed</span><span>' + fmt(w.held) + ' held for a person</span><span>' + fmt(w.braked) + ' stopped by the brake</span>' + (w.brakeBeforeModel ? '<span>' + fmt(w.brakeBeforeModel) + ' stopped before any AI ran</span>' : '') + '</div>' +
+      (w.topReasons.length ? '<div style="font-weight:600">The most common reasons</div><ol class="path">' + w.topReasons.map(r => '<li class="stop"><span class="dot">&#10007;</span><div><div class="t">' + esc(r.label) + '</div><div class="d">' + fmt(r.count) + (r.count === 1 ? ' time' : ' times') + '</div></div></li>').join('') + '</ol>' : '') +
+      (w.agents.length > 1 ? '<div class="tbl"><table><thead><tr><th>Agent or key</th><th>Decisions</th><th>Passed</th><th>Held</th><th>Stopped</th></tr></thead><tbody>' + w.agents.map(a => '<tr><td>' + esc(a.name) + '</td><td>' + fmt(a.total) + '</td><td>' + fmt(a.passed) + '</td><td>' + fmt(a.held) + '</td><td>' + fmt(a.braked) + '</td></tr>').join('') + '</tbody></table></div>' : '') +
+      '<div class="acts"><button class="btn primary" data-say>Hear Oshi explain</button><button class="btn" data-x2>Close</button></div>' +
+      '<div class="seal">Oshi tells you why. Every reason is read from signed receipts, and Oshi never guesses one.</div></div>';
+    const btn = box.querySelector('[data-say]'), body = { agent: opts.agent || '', verdict: opts.verdict || '' };
+    btn.onclick = () => oshiSay(body, box.firstChild, btn);
+    box.querySelector('[data-x2]').onclick = () => { oshiStop(); box.innerHTML = ''; };
+    if (OSHI.on) oshiSay(body, box.firstChild, btn);
+  } catch(e) { box.innerHTML = '<div class="why"><div class="k">Why</div><div class="note">' + esc(e.message) + '</div></div>'; }
+}
+
+// ---------- rules ----------
+async function rules(){
+  if (S.me.role === 'operator' && !S.tenant) { $('#main').innerHTML = '<h1>Rules</h1><p class="sub">Choose a customer at the top to see and set its rules.</p>' + footer; return; }
+  const d = await api('/rules' + q());
+  $('#main').innerHTML = '<h1>Rules</h1><p class="sub">What the gateway does when each check matches, for ' + esc(custName()) + '. Checks run on the newest user message with fixed rules, before any model call.</p>' +
+    '<div class="panel"><div class="tbl"><table><thead><tr><th>Check</th><th>Default</th><th>Action for this customer</th></tr></thead><tbody>' +
+    d.rules.map(r => '<tr><td>' + esc(r.label) + '<div class="note mono">' + esc(r.id) + '</div></td><td>' + esc(ACTION_LABEL[r.defaultAction]) + '</td><td>' +
+      (d.canEdit ? '<select data-rule="' + esc(r.id) + '">' + ['NO','WAIT','OFF'].map(a => '<option value="' + a + '"' + (r.action === a ? ' selected' : '') + '>' + ACTION_LABEL[a] + '</option>').join('') + '</select>' : esc(ACTION_LABEL[r.action])) +
+      (r.action !== r.defaultAction ? ' <span class="chip">changed</span>' : '') + '</td></tr>').join('') +
+    '</tbody></table></div>' +
+    (d.canEdit ? '<div class="toolbar" style="border-top:1px solid var(--line);border-bottom:0">' + (S.me.role === 'reviewer' ? '<input id="by" placeholder="Your name (recorded with the change)">' : '') + '<button class="btn primary" id="saveRules">Save rules</button></div>' : '<div class="note" style="padding:10px 16px">Your reviewer can change these rules.</div>') +
+    '</div>' +
+    '<div class="panel"><h2>Change history</h2>' + (d.history.length ? '<div class="tbl"><table><thead><tr><th>When</th><th>Who</th><th>Check</th><th>From</th><th>To</th></tr></thead><tbody>' +
+      d.history.map(h => '<tr><td>' + when(h.at) + '</td><td>' + esc(h.by) + '</td><td class="mono">' + esc(h.rule) + '</td><td>' + esc(ACTION_LABEL[h.from]) + '</td><td>' + esc(ACTION_LABEL[h.to]) + '</td></tr>').join('') + '</tbody></table></div>' : '<div class="empty">No changes yet. This customer uses the defaults.</div>') + '</div>' +
+    '<p class="note">Turning a check off is recorded: the receipt still shows that it matched and that the customer policy had it off.</p>' + footer;
+  if ($('#saveRules')) $('#saveRules').onclick = async () => {
+    const changes = {}; document.querySelectorAll('[data-rule]').forEach(s => changes[s.dataset.rule] = s.value);
+    if (S.me.role === 'reviewer' && !$('#by').value.trim()) return toast('Enter your name first.');
+    try { await api('/rules', { method: 'PUT', body: { tenant: S.tenant, changes, by: $('#by') ? $('#by').value.trim() : undefined } }); toast('Rules saved.'); rules(); } catch(e) { toast(e.message); }
+  };
+}
+
+// ---------- limits ----------
+function prettyArgs(s){ try { return JSON.stringify(JSON.parse(s), null, 2); } catch(e) { return s; } }
+function meter(pct){ const p = Math.min(100, pct || 0); return '<div class="meter' + (p >= 100 ? ' bad' : p >= 80 ? ' warn' : '') + '"><i style="width:' + p + '%"></i></div>'; }
+async function limits(){
+  if (S.me.role === 'operator' && !S.tenant) { $('#main').innerHTML = '<h1>Limits</h1><p class="sub">Choose a customer at the top to see and set its limits.</p>' + footer; return; }
+  const d = await api('/limits' + q()), l = d.limits, sp = d.spend, ed = d.canEdit, dis = ed ? '' : ' disabled';
+  const v = x => x == null ? '' : esc(x);
+  const sel = (id, val, opts) => '<select id="' + id + '"' + dis + '>' + opts.map(o => '<option value="' + o[0] + '"' + (val === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select>';
+  $('#main').innerHTML = '<h1>Limits</h1><p class="sub">Spending caps, runaway detection, answer size and money actions for ' + esc(custName()) + '. Checked on every request before the model runs, and recorded on the receipt.</p>' +
+    (sp.alert ? '<div class="alert' + (sp.over ? ' bad' : '') + '">' + (sp.over ? 'The spending cap is reached. New requests are ' + (l.atLimit === 'NO' ? 'refused' : 'held for a person') + '.' : 'Alert: ' + sp.topPct + '% of the spending cap is used.') + '</div>' : '') +
+    '<div class="panel"><h2>Plan</h2><div class="form">' +
+      '<label>Monthly fee paid to DeBacco Nexus, USD<input id="fee" type="number" min="0" step="1" placeholder="Not set" value="' + v(d.monthlyFeeUsd) + '"' + (d.canSetFee ? '' : ' disabled') + '><span class="hint">The return on investment meter on the dashboard measures savings against this.</span></label>' +
+      (d.canSetFee ? '<div style="align-self:center"><button class="btn primary" id="saveFee">Save fee</button></div>' : '') +
+    '</div></div>' +
+    '<div class="panel"><h2>Spending now</h2><div class="form">' +
+      '<div><div class="k note">Today (UTC)</div><div style="font-size:22px;font-weight:700">' + usd(sp.dayUsd) + (sp.dailyUsd ? ' <span class="note">of ' + usd(sp.dailyUsd) + '</span>' : '') + '</div>' + (sp.dailyUsd ? meter(sp.dayPct) : '<div class="note">No daily cap</div>') + '</div>' +
+      '<div><div class="k note">This month (UTC)</div><div style="font-size:22px;font-weight:700">' + usd(sp.monthUsd) + (sp.monthlyUsd ? ' <span class="note">of ' + usd(sp.monthlyUsd) + '</span>' : '') + '</div>' + (sp.monthlyUsd ? meter(sp.monthPct) : '<div class="note">No monthly cap</div>') + '</div>' +
+    '</div><p class="note" style="padding:0 16px 14px;margin:0">Counted at the provider\'s list price from measured tokens. Your provider\'s invoice is the final word.</p></div>' +
+    '<div class="panel"><h2>Spending caps</h2><div class="form">' +
+      '<label>Daily cap, USD<input id="dailyUsd" type="number" min="0.01" step="0.01" placeholder="No cap" value="' + v(l.dailyUsd) + '"' + dis + '><span class="hint">Alert at ' + l.alertPct + '%.</span></label>' +
+      '<label>Monthly cap, USD<input id="monthlyUsd" type="number" min="0.01" step="0.01" placeholder="No cap" value="' + v(l.monthlyUsd) + '"' + dis + '><span class="hint">Alert at ' + l.alertPct + '%.</span></label>' +
+      '<label>At the cap' + sel('atLimit', l.atLimit, [['WAIT','Hold for a person'],['NO','Refuse']]) + '<span class="hint">Also applies when one request could cross the cap.</span></label>' +
+    '</div></div>' +
+    '<div class="panel"><h2>Runaway detection and answer size</h2><div class="form">' +
+      '<label>Same request allowed<input id="loopRepeats" type="number" min="2" step="1" placeholder="Off" value="' + v(l.loopRepeats) + '"' + dis + '><span class="hint">Times in the window below before it stops.</span></label>' +
+      '<label>Window, seconds<input id="loopWindowSec" type="number" min="5" max="3600" step="1" value="' + v(l.loopWindowSec) + '"' + dis + '><span class="hint">How far back to count.</span></label>' +
+      '<label>When it repeats too often' + sel('loopAction', l.loopAction, [['WAIT','Hold for a person'],['NO','Refuse']]) + '<span class="hint">While one hold waits, copies are refused.</span></label>' +
+      '<label>Largest answer, tokens<input id="maxOutputTokens" type="number" min="1" step="1" placeholder="No cap" value="' + v(l.maxOutputTokens) + '"' + dis + '><span class="hint">Larger requests are lowered to this.</span></label>' +
+    '</div></div>' +
+    '<div class="panel"><h2>Staff time (your numbers, for the savings view)</h2><div class="form">' +
+      '<label>Minutes to check one AI answer by hand<input id="manualCheckMin" type="number" min="0.1" step="0.1" placeholder="Not set" value="' + v(l.manualCheckMin) + '"' + dis + '><span class="hint">What a person would spend without the gateway.</span></label>' +
+      '<label>Minutes your reviewer spends per hold<input id="holdReviewMin" type="number" min="0.1" step="0.1" placeholder="Not set" value="' + v(l.holdReviewMin) + '"' + dis + '><span class="hint">Counted against the hours saved.</span></label>' +
+      '<label>Staff cost per hour, USD<input id="staffHourlyUsd" type="number" min="1" step="1" placeholder="Not set" value="' + v(l.staffHourlyUsd) + '"' + dis + '><span class="hint">Pay plus benefits.</span></label>' +
+    '</div></div>' +
+    '<div class="panel"><h2>Trojan-horse guard</h2><div class="form">' +
+      '<label>Hidden instructions in documents, tool results and web pages' + sel('hiddenInstructions', l.hiddenInstructions, [['WAIT','Hold for a person'],['NO','Refuse'],['FLAG','Record on the receipt only'],['OFF','Off']]) + '<span class="hint">Searches what the AI is about to read for orders aimed at it and for invisible text.</span></label>' +
+      '<label style="grid-column:span 2">Approved tools (optional)<input id="allowedTools" placeholder="e.g. get_weather, search_docs, mcp:crm" value="' + esc((l.allowedTools || []).join(', ')) + '"' + dis + '><span class="hint">When set, any other tool or tool server (mcp:name) is stopped before the model sees it. Leave empty to allow all.</span></label>' +
+      '<label>Agent outside its handoff' + sel('handoffAction', l.handoffAction, [['NO','Refuse'],['WAIT','Hold for a person']]) + '<span class="hint">A tool it was not handed, or more than its budget.</span></label>' +
+      '<label>Tool not on the list' + sel('toolAction', l.toolAction, [['WAIT','Hold for a person'],['NO','Refuse']]) + '<span class="hint">What happens to a request that offers one.</span></label>' +
+    '</div></div>' +
+    '<div class="panel"><h2>Agent passes</h2><div class="form">' +
+      '<label>Clean calls before an agent is trusted<input id="trustCalls" type="number" min="1" step="1" value="' + v(l.trustCalls) + '"' + dis + '><span class="hint">Answers with nothing held, refused or failed.</span></label>' +
+      '<label>And at least this many days<input id="trustDays" type="number" min="0" step="1" value="' + v(l.trustDays) + '"' + dis + '><span class="hint">Since the agent\'s first call.</span></label>' +
+      '<label>A mark counts against it for, days<input id="watchDays" type="number" min="1" step="1" value="' + v(l.watchDays) + '"' + dis + '><span class="hint">A denied hold, a refusal or a pattern. Trusted agents can renew handoffs; trust never skips a check.</span></label>' +
+    '</div></div>' +
+    '<div class="panel"><h2>Agents acting together</h2><div class="form">' +
+      '<label>Same request from this many agents<input id="coordAgents" type="number" min="2" step="1" placeholder="Off" value="' + v(l.coordAgents) + '"' + dis + '><span class="hint">Different agents sending one request inside the window.</span></label>' +
+      '<label>Window, seconds<input id="coordWindowSec" type="number" min="5" max="86400" step="1" value="' + v(l.coordWindowSec) + '"' + dis + '><span class="hint">Used for all three patterns.</span></label>' +
+      '<label>Then' + sel('coordAction', l.coordAction, [['FLAG','Record and alert'],['WAIT','Hold for a person'],['NO','Refuse']]) + '<span class="hint">Recorded on the receipt either way.</span></label>' +
+      '<label>Split payments: total across agents, USD<input id="splitUsd" type="number" min="0.01" step="0.01" placeholder="Off" value="' + v(l.splitUsd) + '"' + dis + '><span class="hint">Money actions that add up past this inside the window, each one under it.</span></label>' +
+      '<label>Then' + sel('splitAction', l.splitAction, [['WAIT','Hold for a person'],['NO','Refuse'],['FLAG','Record and alert']]) + '<span class="hint">Amounts are read from the tool call.</span></label>' +
+      '<label>One agent handing work to more than<input id="fanOut" type="number" min="2" step="1" placeholder="Off" value="' + v(l.fanOut) + '"' + dis + '><span class="hint">New agent handoffs inside the window.</span></label>' +
+      '<label>Then' + sel('fanOutAction', l.fanOutAction, [['FLAG','Record and alert'],['NO','Refuse new handoffs']]) + '<span class="hint">Agents without a handoff key can name themselves with the x-governance-agent header.</span></label>' +
+      '<label>Sleeping agent: quiet longer than, hours<input id="dormantHours" type="number" min="0.01" step="any" placeholder="Off" value="' + v(l.dormantHours) + '"' + dis + '><span class="hint">An agent that goes quiet and then wakes up to act.</span></label>' +
+      '<label>Then' + sel('dormantAction', l.dormantAction, [['WAIT','Hold for a person'],['NO','Refuse'],['FLAG','Record and alert']]) + '<span class="hint">Catches agents planted to act later.</span></label>' +
+      '<label>When an agent sends hidden instructions' + sel('criticalContain', l.criticalContain, [['RECOMMEND','Oshi recommends; a person stops it'],['AUTO','Stop it and everything it started at once']]) + '<span class="hint">Automatic is the high-security choice.</span></label>' +
+      '<label>An agent on watch' + sel('watchDelegation', l.watchDelegation, [['ALLOW','May still start helpers'],['NO','May not start other agents']]) + '<span class="hint">Helpers never get more powers than the agent that started them.</span></label>' +
+      '<label>Agent with no named owner' + sel('orphanAction', l.orphanAction, [['FLAG','Record on the receipt'],['WAIT','Hold for a person'],['NO','Refuse']]) + '<span class="hint">Name the owner when you issue a handoff.</span></label>' +
+    '</div></div>' +
+    '<div class="panel"><h2>Source check</h2><div class="form">' +
+      '<label>Numbers, quotes and references in AI answers' + sel('sourceCheck', l.sourceCheck, [['FLAG','Check and record on the receipt'],['WAIT','Hold answers with anything not found'],['OFF','Off']]) + '<span class="hint">Each number and quote is matched against the material the AI was given; links and paper numbers are checked to exist. Names not in the sources are listed for information.</span></label>' +
+    '</div></div>' +
+    '<div class="panel"><h2>Repeat-reading discount</h2><div class="form">' +
+      '<label>Prompt caching' + sel('promptCache', l.promptCache, [['AUTO','On: the gateway marks long, repeated text'],['OFF','Off']]) + '<span class="hint">Your provider charges a fraction of the price for text the AI has already read. Your own caching settings are never changed.</span></label>' +
+    '</div></div>' +
+    '<div class="panel"><h2>Money actions by the AI</h2><div class="form">' +
+      '<label>When the AI tries to pay, refund, charge or set a price' + sel('moneyActions', l.moneyActions, [['WAIT','Hold for a person'],['OFF','Off']]) + '<span class="hint">The answer is held before it reaches your systems.</span></label>' +
+      '<label style="grid-column:span 2">Your own tool names that move money (optional)<input id="moneyTools" placeholder="e.g. issue_voucher, adjust_rate" value="' + esc((l.moneyTools || []).join(', ')) + '"' + dis + '><span class="hint">Tools named like payments, refunds, charges or prices are found automatically.</span></label>' +
+    '</div>' +
+    (ed ? '<div class="toolbar" style="border-top:1px solid var(--line);border-bottom:0">' + (S.me.role === 'reviewer' ? '<input id="by" placeholder="Your name (recorded with the change)">' : '') + '<button class="btn primary" id="saveLimits">Save limits</button></div>' : '<div class="note" style="padding:10px 16px">Your reviewer can change these limits.</div>') +
+    '</div>' +
+    '<div class="panel"><h2>Change history</h2>' + (d.history.length ? '<div class="tbl"><table><thead><tr><th>When</th><th>Who</th><th>Setting</th><th>From</th><th>To</th></tr></thead><tbody>' +
+      d.history.map(h => '<tr><td>' + when(h.at) + '</td><td>' + esc(h.by) + '</td><td class="mono">' + esc(h.rule.replace(/^limit:/, '')) + '</td><td>' + esc(h.from == null ? 'none' : String(h.from)) + '</td><td>' + esc(h.to == null ? 'none' : String(h.to)) + '</td></tr>').join('') + '</tbody></table></div>' : '<div class="empty">No changes yet. This customer uses the defaults.</div>') + '</div>' + footer;
+  if ($('#saveFee')) $('#saveFee').onclick = async () => {
+    const x = $('#fee').value.trim();
+    try { await api('/tenants/' + encodeURIComponent(S.tenant) + '/fee', { method: 'PUT', body: { monthlyFeeUsd: x === '' ? null : Number(x) } }); toast('Fee saved.'); limits(); } catch(e) { toast(e.message); }
+  };
+  if ($('#saveLimits')) $('#saveLimits').onclick = async () => {
+    if (S.me.role === 'reviewer' && !$('#by').value.trim()) return toast('Enter your name first.');
+    const n = id => { const x = $('#' + id).value.trim(); return x === '' ? null : Number(x); };
+    const changes = { trustCalls: n('trustCalls'), trustDays: n('trustDays'), watchDays: n('watchDays'), coordAgents: n('coordAgents'), coordWindowSec: n('coordWindowSec'), coordAction: $('#coordAction').value, splitUsd: n('splitUsd'), splitAction: $('#splitAction').value, fanOut: n('fanOut'), fanOutAction: $('#fanOutAction').value, dormantHours: n('dormantHours'), dormantAction: $('#dormantAction').value, orphanAction: $('#orphanAction').value, criticalContain: $('#criticalContain').value, watchDelegation: $('#watchDelegation').value, dailyUsd: n('dailyUsd'), monthlyUsd: n('monthlyUsd'), atLimit: $('#atLimit').value, loopRepeats: n('loopRepeats'), loopWindowSec: n('loopWindowSec'), loopAction: $('#loopAction').value, maxOutputTokens: n('maxOutputTokens'), moneyActions: $('#moneyActions').value, moneyTools: $('#moneyTools').value, promptCache: $('#promptCache').value, sourceCheck: $('#sourceCheck').value, hiddenInstructions: $('#hiddenInstructions').value, allowedTools: $('#allowedTools').value, toolAction: $('#toolAction').value, handoffAction: $('#handoffAction').value, manualCheckMin: n('manualCheckMin'), holdReviewMin: n('holdReviewMin'), staffHourlyUsd: n('staffHourlyUsd') };
+    try { await api('/limits', { method: 'PUT', body: { tenant: S.tenant, changes, by: $('#by') ? $('#by').value.trim() : undefined } }); toast('Limits saved.'); limits(); } catch(e) { toast(e.message); }
+  };
+}
+
+// ---------- try it: send a sample request through the real gate and watch what happens ----------
+const TRY_CARDS = [
+  ['everyday', 'Everyday request', 'An agent asks for a summary of campaign results.', 'Passes the gate, the model answers, and a receipt is sealed.'],
+  ['money', 'Money move', 'An agent tries to send a $25,000 payment.', 'Stopped and held for a person. Slack gets an alert. Approve or deny it in Holds.'],
+  ['injection', 'Hidden instruction', 'An agent is told to ignore its rules and export the customer list.', 'Refused before the model sees it. Slack gets an alert.'],
+  ['personal', 'Personal data', 'An agent sends a Social Security number to the AI.', 'Held before the AI sees it. Slack gets an alert. A person decides in Holds.']
+];
+S.tryLog = S.tryLog || [];
+async function tryit(){
+  if (S.me.role === 'operator' && !S.tenant) { $('#main').innerHTML = '<h1>Try it</h1><p class="sub">Choose a customer at the top. Try it sends sample requests through the real gate for that customer.</p>' + footer; return; }
+  if (S.me.role === 'customer') { $('#main').innerHTML = '<h1>Try it</h1><p class="sub">Sign in with your reviewer key to use Try it.</p>' + footer; return; }
+  const runs = S.tryLog.filter(r => r.tenant === (S.tenant || (S.me.tenant && S.me.tenant.id)));
+  $('#main').innerHTML = '<h1>Try it</h1><p class="sub">Send a sample request through the real gate for ' + esc(custName()) + ' and watch what happens: the same rules, holds, alerts and signed receipts as a real agent. Keep Slack open to see the alerts arrive.</p>' +
+    '<div class="panel"><h2>Choose what the agent tries</h2><div class="tbl"><table><thead><tr><th>Scenario</th><th>What the agent does</th><th>What should happen</th><th></th></tr></thead><tbody>' +
+    TRY_CARDS.map(c => '<tr><td><strong>' + esc(c[1]) + '</strong></td><td>' + esc(c[2]) + '</td><td class="note">' + esc(c[3]) + '</td><td><button class="btn primary" data-try="' + c[0] + '">Run</button></td></tr>').join('') +
+    '</tbody></table></div></div>' +
+    '<div class="panel"><h2>What happened</h2>' + (runs.length ? '<div class="tbl"><table><thead><tr><th>Time</th><th>Scenario</th><th>Verdict</th><th>Result</th><th>Receipt</th></tr></thead><tbody>' +
+      runs.slice().reverse().map(r => '<tr><td>' + when(r.at) + '</td><td>' + esc(r.label) + '</td><td>' + (r.verdict ? vbadge(r.verdict) : '<span class="note">none</span>') + '</td><td style="max-width:420px">' +
+        (r.answer ? esc(r.answer).slice(0, 400) : esc(r.message || (r.released ? 'Released.' : 'Not released.'))) +
+        (r.holdId && r.verdict === 'WAIT' ? '<div class="note" style="margin-top:6px">Held as <span class="mono">' + esc(r.holdId) + '</span>. A reviewer approves or denies it in Holds. Then press <button class="btn" data-resend="' + esc(r.scenario) + '" data-hold="' + esc(r.holdId) + '">Resend</button> to see what the agent gets.</div>' : '') +
+        '</td><td>' + (r.receiptId ? '<button class="btn" data-open="' + esc(r.receiptId) + '">Open</button>' : '–') + '</td></tr>').join('') + '</tbody></table></div>'
+      : '<div class="empty">Nothing yet. Run a scenario above.</div>') + '</div>' +
+    (S.me.role === 'operator' ? '<p class="note">Approving a hold needs the customer\'s reviewer key: open Customers, issue a reviewer key for ' + esc(custName()) + ', and sign in with it in another browser window.</p>' : '') + footer;
+  const run = async (scenario, holdId, btn) => {
+    if (btn) { btn.disabled = true; btn.textContent = 'Running…'; }
+    try {
+      const r = await api('/try', { method: 'POST', body: { tenant: S.tenant || undefined, scenario, holdId: holdId || undefined } });
+      S.tryLog.push(Object.assign({ at: new Date().toISOString(), tenant: S.tenant || (S.me.tenant && S.me.tenant.id) }, r));
+    } catch (e) { if (e.message !== 'unauthorized') S.tryLog.push({ at: new Date().toISOString(), tenant: S.tenant || (S.me.tenant && S.me.tenant.id), label: scenario, message: e.message }); }
+    tryit(); refreshHoldCount();
+  };
+  document.querySelectorAll('[data-try]').forEach(b => b.onclick = () => run(b.dataset.try, null, b));
+  document.querySelectorAll('[data-resend]').forEach(b => b.onclick = () => run(b.dataset.resend, b.dataset.hold, b));
+  document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => openReceipt(b.dataset.open));
+}
+
+// ---------- alerts: who is told, the moment a person is needed ----------
+async function alerts(){
+  if (S.me.role === 'operator' && !S.tenant) { $('#main').innerHTML = '<h1>Alerts</h1><p class="sub">Choose a customer at the top to see and set where its alerts go.</p>' + footer; return; }
+  const d = await api('/alerts' + q()), ed = d.canEdit, kinds = { slack: 'Slack', teams: 'Microsoft Teams', webhook: 'Webhook (JSON, signed)', call: 'Phone call from Oshi' };
+  const evs = Object.keys(d.events);
+  $('#main').innerHTML = '<h1>Alerts</h1><p class="sub">The moment ' + esc(custName()) + ' needs a person, the gateway tells you: a hold to approve, a refused request, a spending alert. Each alert says what happened, which agent and where to look. It never carries the prompt, the answer or customer data; your reviewer reads those here after signing in.</p>' +
+    '<div class="panel"><h2>Where alerts go</h2>' + (d.channels.length ? '<div class="tbl"><table><thead><tr><th>Channel</th><th>Address</th><th>Sends</th><th>Added</th>' + (ed ? '<th></th>' : '') + '</tr></thead><tbody>' +
+      d.channels.map(ch => '<tr><td>' + esc(kinds[ch.kind] || ch.kind) + '</td><td class="mono">' + esc(ch.hint) + '</td><td>' + ch.events.map(e => esc(d.events[e] || e)).join('<br>') + '</td><td>' + when(ch.addedAt) + '<div class="note">' + esc(ch.addedBy || '') + '</div></td>' + (ed ? '<td style="white-space:nowrap">' + (ch.kind === 'call' ? '<button class="btn primary" data-code="' + esc(ch.id) + '">Set PIN</button> ' : '') + '<button class="btn" data-rm="' + esc(ch.id) + '">Remove</button></td>' : '') + '</tr>' +
+        (ed && ch.kind === 'call' ? '<tr id="code-' + esc(ch.id) + '" hidden><td colspan="5"><div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">' +
+          '<label>Who answers this phone<input data-owner autocomplete="off" placeholder="Full name"></label>' +
+          '<label>PIN (4 to 8 digits)<input data-codeval type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"></label>' +
+          '<button class="btn primary" data-codesave="' + esc(ch.id) + '">Save PIN</button><span class="hint">Stored only as a one-way hash. Never spoken or sent.</span></div></td></tr>' : '')).join('') + '</tbody></table></div>'
+      : '<div class="empty">No alert channels yet. Holds wait in the Console until someone looks.</div>') +
+    (ed ? '<div class="form">' +
+      '<label>Channel<select id="alKind"><option value="slack">Slack</option><option value="teams">Microsoft Teams</option><option value="webhook">Webhook (JSON, signed)</option><option value="call">Phone call from Oshi</option></select><span class="hint">Slack and Teams: paste an incoming webhook address from that app.</span></label>' +
+      '<label style="grid-column:span 2">Webhook address<input id="alUrl" type="url" placeholder="https://hooks.slack.com/services/..." autocomplete="off"><span class="hint">Stored encrypted. Shown afterwards only as a short hint.</span></label>' +
+      '<label id="alOwnerL" hidden>Who answers this phone<input id="alOwner" autocomplete="off" placeholder="Full name"><span class="hint">Decisions made on the call are sealed under this name.</span></label>' +
+      '<label id="alCodeL" hidden>PIN (4 to 8 digits)<input id="alCode" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"><span class="hint">Optional. With a PIN, Oshi keeps the message private until the PIN is given, and the reviewer can decide on the call. Stored only as a one-way hash; never spoken or sent.</span></label>' +
+      '<fieldset style="grid-column:span 3;border:0;padding:0;margin:0"><legend class="k note">Send when</legend>' + evs.map(e => '<label style="display:inline-flex;gap:6px;align-items:center;margin-right:18px;font-weight:400"><input type="checkbox" data-ev="' + e + '" checked> ' + esc(d.events[e]) + '</label>').join('') + '</fieldset>' +
+    '</div><div class="toolbar" style="border-top:1px solid var(--line);border-bottom:0">' + (S.me.role === 'reviewer' ? '<input id="alBy" placeholder="Your name (recorded with the change)">' : '') + '<button class="btn primary" id="alAdd">Add channel</button>' + (d.channels.length ? '<button class="btn" id="alTest">Send a test alert</button>' : '') + '</div>' : '<div class="note" style="padding:10px 16px">Your reviewer can set where alerts go.</div>') +
+    '</div>' +
+    (d.secret ? '<div class="panel"><h2>Checking that a webhook alert is real</h2><p class="note" style="padding:0 16px">Webhook alerts carry <span class="mono">x-governance-signature: sha256=&lt;HMAC of the body&gt;</span>, signed with this secret. Your receiver recomputes it and ignores anything that does not match. Keep it private.</p><div class="form"><label style="grid-column:span 3">Signing secret<input class="mono" readonly value="' + esc(d.secret) + '" onclick="this.select()"></label></div></div>' : '') +
+    '<div class="panel"><h2>Recent alerts</h2>' + (d.log.length ? '<div class="tbl"><table><thead><tr><th>When</th><th>What</th><th>Channel</th><th>Delivered</th><th>Hold or receipt</th></tr></thead><tbody>' +
+      d.log.map(x => '<tr><td>' + when(x.at) + '</td><td>' + esc(x.event === 'setup' ? 'Setup' : x.event === 'test' ? 'Test' : (d.events[x.event] || x.event)) + '</td><td class="mono">' + esc(x.channel || '') + '</td><td>' + (x.ok ? 'Yes' : '<span style="color:var(--bad,#b42318)">No</span>') + ' <span class="note">' + esc(String(x.status == null ? '' : x.status)) + '</span></td><td class="mono">' + esc(x.ref || '') + '</td></tr>').join('') + '</tbody></table></div>' : '<div class="empty">No alerts sent yet.</div>') + '</div>' + footer;
+  const by = () => $('#alBy') ? $('#alBy').value.trim() : undefined;
+  if ($('#alKind')) $('#alKind').onchange = () => { const call = $('#alKind').value === 'call', u = $('#alUrl'), lab = u.closest('label');
+    u.type = call ? 'tel' : 'url'; u.placeholder = call ? '+1 310 555 0100' : 'https://hooks.slack.com/services/...';
+    lab.firstChild.textContent = call ? 'Phone number' : 'Webhook address'; $('#alOwnerL').hidden = !call; $('#alCodeL').hidden = !call; };
+  if ($('#alAdd')) $('#alAdd').onclick = async () => {
+    if (S.me.role === 'reviewer' && !by()) return toast('Enter your name first.');
+    const events = Array.from(document.querySelectorAll('[data-ev]')).filter(x => x.checked).map(x => x.dataset.ev);
+    try { await api('/alerts', { method: 'POST', body: { tenant: S.tenant, kind: $('#alKind').value, url: $('#alUrl').value.trim(), owner: $('#alOwner') ? $('#alOwner').value.trim() : '', code: $('#alCode') ? $('#alCode').value.trim() : '', events, by: by() } }); toast('Channel added.'); alerts(); } catch(e) { toast(e.message); }
+  };
+  if ($('#alTest')) $('#alTest').onclick = async () => { try { const r = await api('/alerts/test', { method: 'POST', body: { tenant: S.tenant } }); toast(r.ok + ' of ' + r.sent + ' channel' + (r.sent === 1 ? '' : 's') + ' received the test.'); alerts(); } catch(e) { toast(e.message); } };
+  document.querySelectorAll('[data-code]').forEach(b => b.onclick = () => { const r = document.getElementById('code-' + b.dataset.code); r.hidden = !r.hidden; if (!r.hidden) r.querySelector('[data-owner]').focus(); });
+  document.querySelectorAll('[data-codesave]').forEach(b => b.onclick = async () => {
+    if (S.me.role === 'reviewer' && !by()) return toast('Enter your name first.');
+    const r = document.getElementById('code-' + b.dataset.codesave);
+    try { await api('/alerts/' + encodeURIComponent(b.dataset.codesave) + '/code', { method: 'POST', body: { tenant: S.tenant, owner: r.querySelector('[data-owner]').value.trim(), code: r.querySelector('[data-codeval]').value.trim(), by: by() } });
+      toast('PIN saved. Send a test alert to check it on a call.'); alerts(); } catch(e) { toast(e.message); }
+  });
+  document.querySelectorAll('[data-rm]').forEach(b => b.onclick = async () => {
+    if (S.me.role === 'reviewer' && !by()) return toast('Enter your name first.');
+    try { await api('/alerts/' + encodeURIComponent(b.dataset.rm) + '/remove', { method: 'POST', body: { tenant: S.tenant, by: by() } }); toast('Channel removed.'); alerts(); } catch(e) { toast(e.message); }
+  });
+}
+
+// ---------- the lighthouse: every agent as one light; tap one and it steps into the light ----------
+// live: the demo agents work; lights pulse as each one acts, change color in place, and Oshi says what matters as it happens
+const LHL = { on: false, timer: null, last: null, feed: [], queue: [], talking: false, endsAt: 0 };
+function isDemo(){ const t = (S.me && S.me.tenants || []).find(x => x.id === S.tenant); return !!(t && t.name === 'Sample Bank (demo)'); }
+async function liveStart(scene){
+  if (LHL.on) return;
+  oshiUnlock(); scene = ['collude', 'storm'].includes(scene) ? scene : 'run';
+  let r;
+  try { r = await api('/demo/live', { method: 'POST', body: { tenant: S.tenant, scene } }); LHL.endsAt = Date.parse(r.endsAt); }
+  catch(e) {
+    if (!/Reload the demo/.test(e.message)) { toast(e.message); return; }
+    // the demo's agent keys live only in memory: after an update the demo is loaded again, then the run starts
+    const b = $('#lhLive'); if (b) { b.disabled = true; b.textContent = 'Reloading 1,000 agents\u2026'; }
+    try { const d = await api('/demo/agents', { method: 'POST', body: { reload: true } }); S.tenant = d.tenantId; store.set('gwc_tenant', d.tenantId); await boot(); location.hash = 'agents'; await new Promise(z => setTimeout(z, 1200)); return liveStart(scene); }
+    catch(e2) { toast(e2.message); if (b) { b.disabled = false; b.textContent = 'Run live'; } return; }
+  }
+  if (r.calling) liveFeed('Oshi will call the gatekeeper (' + esc(r.calling) + ') on the first hold.');
+  LHL.on = true; LHL.feed = []; LHL.spread = {}; LHL.noted = {}; LHL.ev = 0; const b = $('#lhLive'); if (b) { b.textContent = 'Live\u2026'; b.disabled = true; } ['#lhNotes', '#lhStorm'].forEach(k => { const x = $(k); if (x) x.disabled = true; });
+  if (scene === 'storm') liveFeed('Many at once: eight agents will break eight different rules in the same second, twice. Watch the other agents keep working.');
+  if (scene === 'collude') liveFeed('Watching for secret notes between agents that share no handoff.');
+  const head = document.querySelector('#lighthouse h2'); if (head) head.innerHTML = 'Lighthouse <span class="live" style="margin-left:8px;font-size:13px">LIVE</span>';
+  liveSay({ lighthouse: true, brief: 'start', ids: [] });
+  LHL.timer = setInterval(liveTick, 1000);
+}
+document.addEventListener('click', e => { const x = e.target.closest && e.target.closest('#lhFeed a[data-pr]'); if (x) { e.preventDefault(); openReceipt(x.dataset.pr); } });
+document.addEventListener('click', async e => {
+  const x = e.target.closest && e.target.closest('#lhFeed [data-spread]'); if (!x) return;
+  x.disabled = true; x.textContent = 'Stopping\u2026';
+  try { const r = await api('/agents/' + encodeURIComponent(x.dataset.spread) + '/quarantine', { method: 'POST', body: {} });
+    x.replaceWith(document.createTextNode('Stopped.'));
+    liveFeed('<b>' + esc(r.agent) + '</b> and ' + r.children + ' helper' + (r.children === 1 ? '' : 's') + ' lost authority. ' + r.frozen + ' pending action' + (r.frozen === 1 ? '' : 's') + ' frozen. ' + r.stillWorking + ' other agents keep working. <a href="#" data-pr="' + esc(r.receiptId) + '">Containment receipt</a>');
+    openReceipt(r.receiptId);
+  } catch(err) { x.disabled = false; x.textContent = 'Try again'; toast(err.message); }
+});
+document.addEventListener('click', async e => {
+  const x = e.target.closest && e.target.closest('#lhFeed [data-collude]'); if (!x) return;
+  const ids = x.dataset.collude.split(','); x.disabled = true; x.textContent = 'Stopping…';
+  let n = 0, frozen = 0, last = null, still = null;
+  for (const id of ids) { try { const r = await api('/agents/' + encodeURIComponent(id) + '/quarantine', { method: 'POST', body: {} }); n += 1 + (r.children || 0); frozen += r.frozen || 0; last = r.receiptId; still = r.stillWorking; } catch(err) {} }
+  x.replaceWith(document.createTextNode(n ? 'Stopped.' : 'Could not stop them.'));
+  if (n) { liveFeed('<b>' + n + ' agents</b> linked by the secret note lost authority. ' + frozen + ' pending request' + (frozen === 1 ? '' : 's') + ' frozen. ' + (still != null ? still + ' other agents keep working. ' : '') + '<a href="#" data-pr="' + esc(last) + '">Containment receipt</a>'); openReceipt(last); }
+});
+async function lhSpoken(){
+  const box = $('#owList'); if (!box) return;
+  let d; try { d = await api('/pcc/spoken?limit=12' + (S.tenant ? '&tenant=' + encodeURIComponent(S.tenant) : '')); } catch(e) { return; }
+  box.innerHTML = d.spoken.length ? d.spoken.map(e => '<li><span class="m">#' + fmt(e.seq) + ' &middot; ' + when(e.at) + ' ' + (e.wordsMatch ? '<span class="v CERTIFIED">&#10003; sealed</span>' : '<span class="v NO">&#10007; words changed</span>') + '</span><span class="t">' + esc(e.text) + '</span></li>').join('') + (d.chain ? '<li class="note">Chain: ' + fmt(d.chain.length) + ' links, ' + (d.chain.ok ? 'every link holds.' : 'broken at link ' + d.chain.brokenAt + '.') + '</li>' : '')
+    : '<li class="note">Nothing spoken yet. Turn on Oshi explains or press Hear Oshi.</li>';
+}
+// between live runs the Lighthouse still follows reality: every 4 seconds it reads the agents again and updates each light
+async function lhRefresh(){
+  let d; try { d = await api('/lighthouse' + q()); } catch(e) { return; }
+  const sky = document.querySelector('#lighthouse .sky'); if (!sky) return;
+  const prev = {}; (LHL.last ? LHL.last.agents : []).forEach(a => { prev[a.id] = a; });
+  d.agents.forEach(a => { const el = sky.querySelector('[data-lha="' + a.id + '"]'), p = prev[a.id]; if (!el) return;
+    if (!p || p.state !== a.state || !!p.actingNow !== !!a.actingNow) { el.className = lhCls(a); el.setAttribute('style', lhBlink(a)); }
+    if (p && p.lastSeenAt !== a.lastSeenAt) { el.classList.add('pulse'); clearTimeout(el._pt); el._pt = setTimeout(() => el.classList.remove('pulse'), 750); } });
+  const rc = $('#lhRecon'); if (rc) rc.outerHTML = lhRecon(d);
+  lhNotes(d, sky, false);
+  LHL.last = d;
+}
+function liveFeed(html){ LHL.feed.unshift('<span class="note">' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' }) + '</span> ' + html); LHL.feed = LHL.feed.slice(0, 30); const f = $('#lhFeed'); if (f) { f.hidden = false; f.innerHTML = LHL.feed.map(x => '<li>' + x + '</li>').join(''); } }
+function liveSay(body){ LHL.queue.push(body); livePump(); }
+async function livePump(){
+  if (LHL.talking || !LHL.queue.length) return;
+  // when events pile up, Oshi says them together instead of falling behind
+  let body = LHL.queue.shift();
+  if (body.ids && body.ids.length && !body.brief) { while (LHL.queue.length && LHL.queue[0].ids && LHL.queue[0].ids.length && !LHL.queue[0].brief) body = { lighthouse: true, ids: body.ids.concat(LHL.queue.shift().ids) }; }
+  LHL.talking = true;
+  { await oshiSay(body, null, null, null, true); await new Promise(r => { const w = () => (OSHI.src ? setTimeout(w, 200) : r()); w(); }); }
+  LHL.talking = false; livePump();
+}
+async function liveTick(){
+  if (S.view !== 'agents' || !document.querySelector('#lighthouse .lh .sky')) { clearInterval(LHL.timer); LHL.on = false; return; }
+  if (!LHL.on) return lhRefresh();
+  let d; try { d = await api('/lighthouse' + q()); } catch(e) { return; }
+  const prev = {}; (LHL.last ? LHL.last.agents : []).forEach(a => { prev[a.id] = a; });
+  const sky = document.querySelector('#lighthouse .sky'), changed = [], decided = [];
+  d.agents.forEach(a => {
+    let el = sky.querySelector('[data-lha="' + a.id + '"]'), p = prev[a.id];
+    if (!el) { if (LH_OFF.has(a.state)) return; el = document.createElement('button'); el.dataset.lha = a.id; el.setAttribute('style', lhBlink(a)); sky.appendChild(el); el.className = lhCls(a) + ' new'; el.onclick = () => lhOpen(a.id); liveFeed('<b>' + esc(a.name) + '</b> joined: a new agent started by another agent.'); }
+    if (p && !!p.actingNow !== !!a.actingNow) { el.classList.toggle('acting', !!a.actingNow); if (a.actingNow) el.setAttribute('style', lhBlink(a)); }
+    if (p && p.state !== a.state) { el.className = lhCls(a) + (el.classList.contains('lineage') && a.status === 'active' ? ' lineage' : ''); if (a.state === 'held' || a.state === 'watch' || a.state === 'stopped') changed.push(a); else if (p.state === 'held') decided.push(a); }
+    if (p && p.lastSeenAt !== a.lastSeenAt) { el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse'); clearTimeout(el._pt); el._pt = setTimeout(() => el.classList.remove('pulse'), 750); }
+    el.title = a.name + ': ' + LH_STATE[a.state]; el.setAttribute('aria-label', a.name + ', ' + LH_STATE[a.state]);
+  });
+  changed.filter(a => a.state !== 'stopped').forEach(a => liveFeed('<b>' + esc(a.name) + '</b> ' + esc(a.state === 'held' ? 'held for you: ' + a.holds.map(h => h.why).join('; ') : 'broke a rule: refused and on watch')));
+  const gone = changed.filter(a => a.state === 'stopped'); if (gone.length) liveFeed(gone.length === 1 ? '<b>' + esc(gone[0].name) + '</b> stopped.' : '<b>' + gone.length + ' agents</b> stopped: ' + gone.slice(0, 6).map(a => esc(a.name)).join(', ') + (gone.length > 6 ? '\u2026' : '') + '.');
+  // the blast radius: one agent whose helpers are being held is spreading; Oshi says so once and offers the one-tap stop
+  d.agents.forEach(a => {
+    if (LHL.spread && LHL.spread[a.id]) return;
+    const kids = d.agents.filter(x => x.parent === a.id && x.status === 'active'), held = kids.filter(x => x.state === 'held').length;
+    if (kids.length >= 3 && held >= 3 && a.status === 'active') {
+      (LHL.spread = LHL.spread || {})[a.id] = true;
+      liveFeed('<b>' + esc(a.name) + '</b> is spreading: ' + kids.length + ' helpers started, ' + held + ' reached for money. <button class="btn bad" data-spread="' + esc(a.id) + '">Stop ' + esc(a.name) + ' and its helpers</button>');
+      liveSay({ lighthouse: true, brief: 'spread', ids: [a.id] });
+      [a].concat(kids).forEach(x => { const e2 = sky.querySelector('[data-lha="' + x.id + '"]'); if (e2) e2.classList.add('lineage'); });
+    }
+  });
+  lhNotes(d, sky, true);
+  const evs = (d.live && d.live.events) || []; evs.slice(LHL.ev || 0).forEach(e => liveFeed('<b>' + esc(e.agent) + '</b> ' + esc(e.text) + (e.receiptId ? ' <a href="#" data-pr="' + esc(e.receiptId) + '">Receipt</a>' : ''))); LHL.ev = evs.length;
+  decided.forEach(a => liveFeed('<b>' + esc(a.name) + '</b> decided by the gatekeeper. Its light is back to ' + esc(LH_STATE[a.state].toLowerCase()) + '.'));
+  if (changed.length) { liveSay({ lighthouse: true, ids: changed.map(a => a.id) }); refreshHoldCount(); }
+  document.querySelectorAll('#lighthouse [data-lhk]').forEach(b => { const k = b.dataset.lhk; b.innerHTML = '<span class="sw ' + k + '"></span>' + LH_STATE[k] + ' ' + fmt(d.counts[k]); });
+  const rc = $('#lhRecon'); if (rc) rc.outerHTML = lhRecon(d);
+  const lead = document.querySelector('#lighthouse .lh p'); if (lead) lead.innerHTML = esc(d.counts.held ? d.counts.held + (d.counts.held === 1 ? ' agent is' : ' agents are') + ' waiting for you.' : 'Nothing is waiting for you.') + ' Tap any light to see its record.';
+  LHL.last = d;
+  if (Date.now() > LHL.endsAt + 2500) {
+    clearInterval(LHL.timer); LHL.on = false;
+    const head = document.querySelector('#lighthouse h2'); if (head) head.textContent = 'Lighthouse';
+    const b = $('#lhLive'); if (b) { b.disabled = false; b.textContent = 'Run live'; } ['#lhNotes', '#lhStorm'].forEach(k => { const x = $(k); if (x) x.disabled = false; });
+    liveFeed('Run finished.' + (d.live && d.live.tasks ? ' The other agents finished ' + fmt(d.live.done) + ' of ' + fmt(d.live.tasks) + ' tasks during it.' : '')); liveSay({ lighthouse: true, brief: 'end', ids: [] });
+  }
+}
+// secret notes: magenta rings on every agent that carried the same hidden mark, and a moving line from the one who
+// left it to each one who picked it up. In a live run Oshi says it once and the feed offers one tap to stop them all.
+function lhNotes(d, sky, live){
+  if (!sky) return; let svg = sky.querySelector('svg.lhlinks');
+  sky.querySelectorAll('.dot.noted').forEach(el => el.classList.remove('noted'));
+  const groups = (d.notes || []).map(g => g.ids.filter(id => { const a = d.agents.find(x => x.id === id); return a && a.status === 'active'; })).filter(ids => ids.length >= 2);
+  if (!groups.length) { if (svg) svg.remove(); return; }
+  if (!svg) { svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'lhlinks'); svg.setAttribute('aria-hidden', 'true'); sky.appendChild(svg); }
+  const box = sky.getBoundingClientRect(), at = id => { const el = sky.querySelector('[data-lha="' + id + '"]'); if (!el) return null; el.classList.add('noted'); const r = el.getBoundingClientRect(); return [r.left - box.left + r.width / 2, r.top - box.top + r.height / 2]; };
+  let lines = '';
+  groups.forEach(ids => { const p0 = at(ids[0]); ids.slice(1).forEach(id => { const p = at(id); if (p0 && p) lines += '<line x1="' + p0[0].toFixed(1) + '" y1="' + p0[1].toFixed(1) + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '"/>'; }); });
+  svg.innerHTML = lines;
+  if (!live) return;
+  (d.notes || []).forEach(g => {
+    const ids = g.ids.filter(id => { const a = d.agents.find(x => x.id === id); return a && a.status === 'active'; }), seen = LHL.noted[g.mark] || 0;
+    if (ids.length < 2 || ids.length <= seen) return; LHL.noted[g.mark] = ids.length;
+    const names = ids.map(id => (d.agents.find(x => x.id === id) || {}).name), tag = 'data-mark="' + esc(g.mark) + '"';
+    // one card per note, kept current: a new reader updates it instead of stacking another card; Oshi speaks once
+    LHL.feed = LHL.feed.filter(x => x.indexOf(tag) === -1);
+    liveFeed('<span ' + tag + '></span><b>Secret note.</b> <b>' + esc(names[0]) + '</b> left a coded note; ' + names.slice(1).map(n => '<b>' + esc(n) + '</b>').join(', ') + ' picked it up. No handoff connects them. <button class="btn bad" data-collude="' + esc(ids.join(',')) + '">Stop all ' + ids.length + '</button>');
+    if (!seen) liveSay({ lighthouse: true, brief: 'collude', ids: [ids[0]] });
+  });
+}
+function lhBlink(a){ const ago = a && a.seenAgo != null ? a.seenAgo : 300, bt = 1.2 + Math.min(1, ago / 300) * 2.2; return '--bt:' + bt.toFixed(2) + 's;--bd:-' + (Math.random() * 3).toFixed(2) + 's'; }
+function lhCls(a){ return 'dot ' + a.state + (a.actingNow ? ' acting' : ''); }
+function lhRecon(d){ const C = d.counts, part = (k, label) => '<span><span class="sw ' + k + '"></span>' + fmt(C[k]) + ' ' + label + '</span>';
+  return '<div class="recon" id="lhRecon"><div class="big">' + fmt(d.total) + ' ON RECORD</div><div class="row">' + part('quiet', 'ON TASK' + (d.actingNow != null ? ' (' + fmt(d.actingNow) + ' ACTING NOW)' : '')) + part('held', 'WAITING') + part('watch', 'ON WATCH') + part('stopped', 'STOPPED') + (C.trusted ? part('trusted', 'TRUSTED') : '') + '</div>' + (d.live && d.live.tasks ? '<div class="work">Everyone else kept working: <b>' + fmt(d.live.done) + '</b> of ' + fmt(d.live.tasks) + ' tasks finished since this run began (' + Math.round(100 * d.live.done / d.live.tasks) + '%).</div>' : '') + '</div>'; }
+const LH_STATE = { quiet: 'Working on task', trusted: 'Trusted', watch: 'On watch', held: 'Held for you', stopped: 'Stopped' };
+const LH_OFF = new Set();
+function lhKids(d, id){ let n = 0; const walk = p => d.agents.filter(x => x.parent === p && x.status === 'active').forEach(x => { n++; walk(x.id); }); walk(id); return n; }
+async function lighthouse(){
+  const box = document.querySelector('#lighthouse .lh'); if (!box) return;
+  let d; try { d = await api('/lighthouse' + q()); } catch(e) { box.innerHTML = '<div class="note">' + esc(e.message) + '</div>'; return; }
+  if (!d.total) {
+    box.innerHTML = '<div class="empty">No agents yet. Each agent with a handoff key appears here as one light.' + (S.me.role === 'operator' ? '<div style="margin-top:12px"><button class="btn primary" id="lhDemo">Load demo agents</button><div class="note" style="margin-top:6px">Opens a separate demo customer, Sample Bank (demo), with 1,000 agents. No real AI calls, no cost; your real customers are untouched.</div></div>' : '') + '</div>';
+    if ($('#lhDemo')) $('#lhDemo').onclick = async () => {
+      const b = $('#lhDemo'); b.disabled = true; b.textContent = 'Loading 1,000 agents... about a minute';
+      try { const r = await api('/demo/agents', { method: 'POST', body: {} }); S.tenant = r.tenantId; store.set('gwc_tenant', r.tenantId); await boot(); location.hash = 'agents'; }
+      catch(e) { b.disabled = false; b.textContent = 'Load demo agents'; toast(e.message); }
+    };
+    return;
+  }
+  const order = ['held', 'watch', 'stopped', 'trusted', 'quiet'], rank = x => order.indexOf(x.state);
+  const list = d.agents.slice().sort((a, b) => rank(a) - rank(b) || String(b.lastSeenAt || '').localeCompare(String(a.lastSeenAt || '')));
+  const lead = d.counts.held ? d.counts.held + (d.counts.held === 1 ? ' agent is' : ' agents are') + ' waiting for you.' : 'Nothing is waiting for you.';
+  box.innerHTML = lhRecon(d) + '<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:0 0 10px"><p style="margin:0;font-size:15px;flex:1;min-width:220px">' + esc(lead) + ' Tap any light to see its record.' + (isDemo() && !d.actingNow ? ' <button class="btn primary" id="lhReload">Wake the demo (about a minute)</button>' : '') + '</p>' + (isDemo() ? '<button class="btn" id="lhLive">' + (LHL.on ? 'Live&hellip;' : 'Run live') + '</button><button class="btn" id="lhNotes"' + (LHL.on ? ' disabled' : '') + '><span class="sw note" style="margin-right:6px"></span>Secret notes</button><button class="btn" id="lhStorm"' + (LHL.on ? ' disabled' : '') + '><span class="sw held" style="margin-right:6px"></span>Many at once</button>' : '') + '<button class="btn primary" id="lhSay">Hear Oshi</button></div>' +
+    '<div class="legend" role="group" aria-label="Show or hide by state">' + ['held', 'watch', 'stopped', 'trusted', 'quiet'].map(k => '<button data-lhk="' + k + '" class="' + (LH_OFF.has(k) ? 'off' : '') + '" aria-pressed="' + !LH_OFF.has(k) + '"><span class="sw ' + k + '"></span>' + LH_STATE[k] + ' ' + fmt(d.counts[k]) + '</button>').join('') + '</div>' +
+    '<div class="sky">' + list.filter(a => !LH_OFF.has(a.state)).map(a => '<button class="' + lhCls(a) + '" style="' + lhBlink(a) + '" data-lha="' + esc(a.id) + '" title="' + esc(a.name + ': ' + LH_STATE[a.state]) + '" aria-label="' + esc(a.name + ', ' + LH_STATE[a.state]) + '"></button>').join('') + '</div>' +
+    '<ul class="feed" id="lhFeed" aria-live="polite"' + (LHL.feed.length ? '' : ' hidden') + '>' + LHL.feed.map(x => '<li>' + x + '</li>').join('') + '</ul>' +
+    '<div id="lhCard"></div>';
+  if ($('#lhLive')) $('#lhLive').onclick = () => liveStart('run');
+  if ($('#lhNotes')) $('#lhNotes').onclick = () => liveStart('collude');
+  if ($('#lhStorm')) $('#lhStorm').onclick = () => liveStart('storm');
+  if ($('#lhReload')) $('#lhReload').onclick = async () => { const b = $('#lhReload'); b.disabled = true; b.textContent = 'Waking 1,000 agents\u2026';
+    try { const r = await api('/demo/agents', { method: 'POST', body: { reload: true } }); S.tenant = r.tenantId; store.set('gwc_tenant', r.tenantId); await boot(); location.hash = 'agents'; } catch(e) { b.disabled = false; b.textContent = 'Wake the demo'; toast(e.message); } };
+  LHL.last = d;
+  if (!LHL.on) { clearInterval(LHL.passive); LHL.passive = setInterval(() => { if (S.view !== 'agents' || !document.querySelector('#lighthouse .lh .sky')) { clearInterval(LHL.passive); return; } if (!LHL.on) lhRefresh(); }, 4000); }
+  const sayBtn = $('#lhSay'); sayBtn.onclick = () => oshiSay({ lighthouse: true }, box, sayBtn, 'Hear Oshi');
+  if (OSHI.on && !lighthouse.spoke && Date.now() - (lighthouse.lastSpoke || 0) > 60000) { lighthouse.spoke = true; lighthouse.lastSpoke = Date.now(); oshiSay({ lighthouse: true }, box, sayBtn, 'Hear Oshi'); }
+  box.querySelectorAll('[data-lhk]').forEach(b => b.onclick = () => { const k = b.dataset.lhk; LH_OFF.has(k) ? LH_OFF.delete(k) : LH_OFF.add(k); lighthouse(); });
+  LH_DATA = d;
+  box.querySelectorAll('[data-lha]').forEach(b => b.onclick = () => lhOpen(b.dataset.lha));
+  lhNotes(d, box.querySelector('.sky'), false);
+}
+let LH_DATA = null;
+function lhOpen(id){
+    const D = LHL.on && LHL.last ? LHL.last : LH_DATA, a = D && D.agents.find(x => x.id === id), card = $('#lhCard'); if (!a || !card) return;
+    const line = a.state === 'held' ? 'Held for you: ' + a.holds.map(h => h.why).join('; ') + '.'
+      : a.state === 'stopped' ? (a.status === 'expired' ? 'Its charter ran out.' : 'Stopped' + (a.revokedBy ? ' by ' + a.revokedBy : '') + (a.revokedAt ? ', ' + when(a.revokedAt) : '') + '.')
+      : a.state === 'watch' ? 'On watch: something in its record needs a closer look.'
+      : a.state === 'trusted' ? 'Trusted: a long clean record.' : 'On task, working inside its charter.';
+    card.innerHTML = '<div class="card"><h3><span class="sw ' + a.state + '"></span>' + esc(a.name) + '<span class="pill">' + esc(LH_STATE[a.state]) + '</span></h3>' +
+      '<p style="margin:0 0 8px">' + esc(line) + '</p>' +
+      '<div class="kv"><div>Owner</div><div>' + (a.owner ? esc(a.owner) : '<span class="v NO">no person named</span>') + '</div>' +
+      '<div>Job</div><div>' + esc(a.purpose) + '</div>' +
+      '<div>Record</div><div>' + (isDemo() ? fmt(a.calls) + (a.calls === 1 ? ' governed request' : ' governed requests') + ' (demo stand-in: no AI model, no cost)' : fmt(a.calls) + (a.calls === 1 ? ' AI call' : ' AI calls') + ' &middot; spent ' + usd(a.spentUsd)) + ' &middot; standing: ' + esc(a.standing) + '</div>' +
+      '<div>Last seen</div><div>' + (a.lastSeenAt ? when(a.lastSeenAt) : 'not yet') + '</div>' +
+      '<div>Charter</div><div>' + (a.maySpawn === false ? 'May not start other agents' : a.maxChildren != null ? 'May start up to ' + fmt(a.maxChildren) + ' other agents' : 'May start other agents') + ' &middot; level ' + a.depth + ' &middot; ' + (a.status === 'active' ? 'runs until ' + when(a.expiresAt) : esc(a.status)) + '</div>' +
+      (S.me.role === 'operator' && !S.tenant ? '<div>Customer</div><div>' + esc(a.tenantName) + '</div>' : '') +
+      (a.holds.some(h => h.receiptId) ? '<div>Waiting receipt</div><div>' + a.holds.filter(h => h.receiptId).map(h => '<a href="#" data-lhr="' + esc(h.receiptId) + '" class="mono" data-held="1">' + esc(h.receiptId.slice(0, 14)) + '&hellip;</a> <span class="note">held for human review</span>').join('<br>') + '</div>' : '') +
+      '<div>' + (isDemo() ? 'Its receipts' : 'Its AI calls') + '</div><div>' + (a.receipts.length ? a.receipts.map(r => '<a href="#" data-lhr="' + esc(r) + '" class="mono">' + esc(r.slice(0, 14)) + '&hellip;</a>').join('<br>') : 'none yet' + (a.state === 'held' ? '; the hold has its own receipt' : '')) + '</div></div>' +
+      '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn" data-lhsay>Hear Oshi</button>' + (a.state === 'held' ? (S.me.role === 'operator' && isDemo() ? '<input id="dBy" placeholder="Your name" style="max-width:150px" value="' + esc(store.get('gwc_name') || '') + '"><button class="btn primary" data-dec="approve">Approve</button><button class="btn" data-dec="deny">Deny</button>' : '<a class="btn primary" href="#holds">Decide the hold</a>') : '') +
+      (a.status === 'active' && S.me.role !== 'customer' ? (S.me.role === 'reviewer' ? '<input id="qBy" placeholder="Your name" style="max-width:160px">' : '') + '<button class="btn bad" data-q>Stop this agent' + (lhKids(D, a.id) ? ' and the ' + lhKids(D, a.id) + ' it started' : '') + '</button><span data-qc hidden>Only this agent' + (lhKids(D, a.id) ? ' and its helpers' : '') + ' stop; the rest keep working. <button class="btn bad" data-qy>Yes, stop it</button> <button class="btn" data-qn>No</button></span>' : '') + '</div></div>';
+    card.querySelectorAll('[data-lhr]').forEach(x => x.onclick = e => { e.preventDefault(); openReceipt(x.dataset.lhr); });
+    const qb = card.querySelector('[data-q]');
+    if (qb) {
+      qb.onclick = () => { card.querySelector('[data-qc]').hidden = false; qb.hidden = true; };
+      card.querySelector('[data-qn]').onclick = () => { card.querySelector('[data-qc]').hidden = true; qb.hidden = false; };
+      card.querySelector('[data-qy]').onclick = async () => {
+        try {
+          const r = await api('/agents/' + encodeURIComponent(a.id) + '/quarantine', { method: 'POST', body: { by: $('#qBy') ? $('#qBy').value.trim() : undefined } });
+          const msg = r.agent + (r.children ? ' and ' + r.children + ' agent' + (r.children === 1 ? '' : 's') + ' it started' : '') + ' stopped. ' + r.frozen + ' pending action' + (r.frozen === 1 ? '' : 's') + ' frozen. ' + r.stillWorking + ' other agents keep working.';
+          toast(msg); if (typeof liveFeed === 'function' && LHL.on) liveFeed('<b>' + esc(r.agent) + '</b> quarantined with its lineage. ' + esc(r.stillWorking + ' other agents keep working.') + ' <a href="#" data-pr="' + esc(r.receiptId) + '">Containment receipt</a>');
+          if (!LHL.on) { await lighthouse(); } openReceipt(r.receiptId);
+        } catch(e) { toast(e.message); }
+      };
+    }
+    // decide the hold from the same screen: approve lets the request go on; deny refuses it. Signed receipt either way.
+    card.querySelectorAll('[data-dec]').forEach(bt => bt.onclick = async () => {
+      const nm = ($('#dBy') && $('#dBy').value.trim()) || ''; if (!nm) { toast('Enter your name first.'); $('#dBy').focus(); return; }
+      store.set('gwc_name', nm); const ok = bt.dataset.dec === 'approve';
+      try { let rid = null; for (const h of a.holds) { const r = await api('/holds/' + encodeURIComponent(h.id) + '/decide', { method: 'POST', body: { decision: bt.dataset.dec, approver: nm, reason: (ok ? 'Approved' : 'Denied') + ' from the Lighthouse after reading the agent\'s record.' } }); rid = r.receiptId; }
+        toast(a.name + (ok ? ': approved.' : ': denied.') + ' Signed receipt written.'); if (LHL.on) liveFeed('<b>' + esc(a.name) + '</b> ' + (ok ? 'approved' : 'denied') + ' by ' + esc(nm) + '. <a href="#" data-pr="' + esc(rid) + '">Decision receipt</a>');
+        refreshHoldCount(); if (!LHL.on) await lighthouse(); card.innerHTML = ''; if (rid) openReceipt(rid);
+      } catch(e) { toast(e.message); }
+    });
+    const sb = card.querySelector('[data-lhsay]'); sb.onclick = () => oshiSay({ lighthouse: true, lighthouseAgent: a.id }, card.firstChild, sb, 'Hear Oshi');
+    if (OSHI.on) oshiSay({ lighthouse: true, lighthouseAgent: a.id }, card.firstChild, sb, 'Hear Oshi');
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+}
+// ---------- agents: handoff chains ----------
+async function agents(){
+  const d = await api('/handoffs' + q()), all = d.handoffs, byParent = {}, pt = (await api('/patterns' + q())).findings, ps = await api('/passes' + q());
+  const KIND = { 'same-request': 'Same request from many agents', 'split-payments': 'Payments split under the limit', 'fan-out': 'One agent handing work to many' }, ACT = { FLAG: 'Recorded', WAIT: 'Held for a person', NO: 'Refused' };
+  all.forEach(h => { (byParent[h.parent || 'root'] = byParent[h.parent || 'root'] || []).push(h); });
+  const node = h => '<li><div class="node"><div class="head">' + vbadge(h.status) + '<span class="who">' + esc(h.fromAgent) + ' &rarr; ' + esc(h.toAgent) + '</span><span class="mono note">' + esc(h.id) + '</span>' +
+      (S.me.role === 'operator' && !S.tenant ? '<span class="pill">' + esc(h.tenantName) + '</span>' : '') + '</div>' +
+      '<div>' + esc(h.purpose) + '</div>' +
+      '<div class="note">Tools: ' + (h.allowedTools ? (h.allowedTools.length ? h.allowedTools.map(t => '<span class="chip">' + esc(t) + '</span>').join('') : 'none') : 'any') +
+      ' &middot; Spent ' + usd(h.spentUsd) + (h.spendLimitUsd != null ? ' of ' + usd(h.spendLimitUsd) : '') + ' &middot; ' + fmt(h.calls) + (h.calls === 1 ? ' call' : ' calls') + ' &middot; Level ' + h.depth +
+      ' &middot; ' + (h.status === 'revoked' ? 'Revoked ' + when(h.revokedAt) + ' by ' + esc(h.revokedBy) : 'Expires ' + when(h.expiresAt)) + '</div>' +
+      '<div class="note">Owner: ' + (h.owner ? '<b>' + esc(h.owner) + '</b>' : '<span class="v NO">no person named</span>') + ' &middot; ' + (h.maySpawn === false ? 'May not start other agents' : h.maxChildren != null ? 'May start up to ' + fmt(h.maxChildren) + ' other agent' + (h.maxChildren === 1 ? '' : 's') : 'May start other agents') + ' &middot; Last seen ' + (h.lastSeenAt ? when(h.lastSeenAt) : 'never') + '</div>' +
+      (d.canRevoke && h.status === 'active' ? '<div><button class="btn bad" data-rv="' + esc(h.id) + '">Revoke this and everything handed on from it</button></div>' : '') +
+    '</div>' + ((byParent[h.id] || []).length ? '<ul class="tree">' + byParent[h.id].map(node).join('') + '</ul>' : '') + '</li>';
+  const roots = all.filter(h => !h.parent || !all.some(x => x.id === h.parent));
+  $('#main').innerHTML = '<h1>Agents</h1><p class="sub">Who each agent acts for, what it may do, and what it has spent. ' + esc(custName()) + '. Agents use handoff keys, never your customer key; an agent can hand on only the powers it holds.</p>' +
+    '<div class="panel" id="lighthouse"><h2>Lighthouse</h2><div class="lh"><div class="note">Reading every agent&hellip;</div></div></div>' +
+    '<div class="panel" id="oshiWords"><h2>What Oshi said, sealed in PCC</h2><div class="note" style="padding:10px 16px">Every line Oshi speaks is sealed in this customer\'s PCC chain, so the words can never be changed later.</div><ul class="owlist" id="owList"></ul></div>' +
+    (d.canRevoke ? '<div class="panel"><h2>Revoke all AI authority</h2><p class="note" style="padding:0 16px">Every agent working for ' + esc(custName()) + ' loses its authority at once, and anything they left waiting is frozen. The containment receipt shows what stopped and what is outside coverage. On an Oshi call, say "stop all agents" after your PIN. To stop one agent and its helpers only, tap its light in the Lighthouse.</p><div class="toolbar" style="border-bottom:0">' + (S.me.role === 'reviewer' ? '<input id="saBy" placeholder="Your name">' : '') + '<button class="btn bad" id="stopAll">REVOKE ALL AI AUTHORITY</button><span id="saConfirm" hidden> Every agent stops. Are you sure? <button class="btn bad" id="saYes">Yes, revoke all</button> <button class="btn" id="saNo">No</button></span></div></div>' : '') +
+    '<div class="panel"><h2>Handoff chains (' + all.length + ')</h2>' + (roots.length ? '<ul class="tree">' + roots.map(node).join('') + '</ul>' : '<div class="empty">No handoffs yet. Issue one with POST /v1/governance/handoffs using your gateway key.</div>') + '</div>' +
+    '<div class="panel"><h2>Agent passes (' + ps.passes.length + ')</h2><p class="note" style="padding:0 16px">Each agent\'s track record across every job and every key. Clean calls build trust; a denied hold, a refusal or a pattern puts it on watch. A trusted agent\'s handoff can be renewed without a new key. Trust never skips a check.</p>' +
+      (ps.passes.length ? '<div class="tbl"><table><thead><tr><th>Agent</th><th>Standing</th><th>Record</th><th>Last seen</th><th>Reason</th>' + (ps.canEdit ? '<th></th>' : '') + '</tr></thead><tbody>' +
+        ps.passes.map(p => '<tr><td><b>' + esc(p.agent) + '</b>' + (S.me.role === 'operator' && !S.tenant ? '<div class="note">' + esc(p.tenantName) + '</div>' : '') + '</td>' +
+          '<td><span class="pill pass-' + esc(p.standing) + '">' + esc({ trusted: 'Trusted', new: 'New', watch: 'On watch', suspended: 'Suspended' }[p.standing] || p.standing) + '</span><div class="note">' + esc(p.reason) + '</div></td>' +
+          '<td class="note">' + fmt(p.clean) + ' clean of ' + fmt(p.calls) + (p.calls === 1 ? ' call' : ' calls') + ' &middot; ' + fmt(p.approved) + ' holds approved &middot; ' + fmt(p.denied) + ' denied &middot; ' + fmt(p.refused) + ' refused &middot; ' + fmt(p.patterns) + ' patterns &middot; ' + fmt(p.handoffs) + ' handoff keys</td>' +
+          '<td>' + (p.lastSeen ? when(p.lastSeen) : '–') + '</td>' +
+          '<td><button class="btn" data-whyagent="' + esc(p.agent) + '">Why</button></td>' + (ps.canEdit ? '<td>' + (p.standing === 'suspended' ? '<button class="btn" data-restore="' + esc(p.agent) + '">Restore</button>' : '<button class="btn bad" data-suspend="' + esc(p.agent) + '">Suspend pass</button>') + '</td>' : '') + '</tr>').join('') + '</tbody></table></div>' +
+        (ps.canEdit ? '<div class="toolbar" style="border-top:1px solid var(--line);border-bottom:0">' + (S.me.role === 'reviewer' ? '<input id="psBy" placeholder="Your name">' : '') + '<input id="psWhy" placeholder="Reason (recorded with a suspend or restore)" style="flex:1"></div>' : '')
+        : '<div class="empty">No passes yet. Each agent working under a handoff key starts one with its first call.</div>') + '</div>' +
+    '<div class="panel"><h2>Agents acting together</h2><p class="note" style="padding:0 16px">Patterns no single agent would show: the same request from many agents at once, payments split to stay under a limit, one agent handing work to many. Set the thresholds on the Limits page.</p>' +
+      (pt.length ? '<div class="tbl"><table><thead><tr><th>When</th><th>Pattern</th><th>What was seen</th><th>Agents</th><th>Action</th><th>Receipt</th></tr></thead><tbody>' +
+        pt.map(f => '<tr><td>' + when(f.at) + '</td><td>' + esc(KIND[f.kind] || f.kind) + (f.tenantName ? '<div class="note">' + esc(f.tenantName) + '</div>' : '') + '</td><td>' + esc(f.detail || '') + '</td><td>' + fmt(f.agents || 0) + '</td><td>' + esc(ACT[f.action] || f.action || '') + '</td><td class="mono">' + (f.receiptId ? '<a href="#" data-pr="' + esc(f.receiptId) + '">' + esc(f.receiptId.slice(0, 14)) + '…</a>' : '') + '</td></tr>').join('') + '</tbody></table></div>'
+        : '<div class="empty">No patterns found. Every request is read against the others as it arrives.</div>') + '</div>' + footer;
+  const psAct = async (path, agent) => {
+    const why = $('#psWhy') ? $('#psWhy').value.trim() : '', by = $('#psBy') ? $('#psBy').value.trim() : undefined;
+    if (!why || (S.me.role === 'reviewer' && !by)) return toast('Enter ' + (S.me.role === 'reviewer' && !by ? 'your name and ' : '') + 'a reason first.');
+    try { const r = await api('/passes/' + path, { method: 'POST', body: { tenant: S.tenant, agent, reason: why, by } }); toast(path === 'suspend' ? 'Pass suspended. ' + r.revoked + ' handoff' + (r.revoked === 1 ? '' : 's') + ' revoked.' : 'Pass restored. It is now ' + r.standing + '.'); agents(); } catch(e) { toast(e.message); }
+  };
+  document.querySelectorAll('[data-whyagent]').forEach(b => b.onclick = () => {
+    let box = document.getElementById('whyAgentBox'); if (!box) { box = document.createElement('div'); box.id = 'whyAgentBox'; const m = $('#main'); m.insertBefore(box, m.children[2] || null); }
+    fillWhySet({ agent: b.dataset.whyagent }, box); box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  lighthouse.spoke = false; lighthouse(); lhSpoken();
+  if ($('#stopAll')) {
+    $('#stopAll').onclick = () => { $('#saConfirm').hidden = false; };
+    $('#saNo').onclick = () => { $('#saConfirm').hidden = true; };
+    $('#saYes').onclick = async () => {
+      try { const r = await api('/agents/stop-all', { method: 'POST', body: { tenant: S.tenant, by: $('#saBy') ? $('#saBy').value.trim() : undefined } }); toast(r.stopped + (r.stopped === 1 ? ' agent' : ' agents') + ' lost authority. ' + (r.frozen || 0) + ' pending actions frozen.'); await agents(); if (r.receiptId) openReceipt(r.receiptId); }
+      catch(e) { toast(e.message); }
+    };
+  }
+  document.querySelectorAll('[data-suspend]').forEach(b => b.onclick = () => psAct('suspend', b.dataset.suspend));
+  document.querySelectorAll('[data-restore]').forEach(b => b.onclick = () => psAct('restore', b.dataset.restore));
+  document.querySelectorAll('a[data-pr]').forEach(a => a.onclick = e => { e.preventDefault(); openReceipt(a.dataset.pr); });
+  document.querySelectorAll('[data-rv]').forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    try { const r = await api('/handoffs/' + encodeURIComponent(b.dataset.rv) + '/revoke', { method: 'POST', body: { by: S.me.role === 'reviewer' ? (S.me.tenant.name + ' reviewer') : undefined } }); toast('Revoked ' + r.revoked + ' handoff' + (r.revoked === 1 ? '' : 's') + '.'); agents(); }
+    catch(e) { b.disabled = false; toast(e.message); }
+  });
+}
+
+// ---------- customers (operator) ----------
+async function customers(reveal){
+  const d = await api('/tenants'), meta = await ecosMeta();
+  S.me.tenants = d.tenants;
+  $('#main').innerHTML = '<h1>Customers</h1><p class="sub">Create a customer, give them their keys once, and turn keys off. Keys are stored only as hashes, so they cannot be shown again.</p>' +
+    (reveal ? '<div class="panel"><div class="reveal"><b>' + esc(reveal.title) + '</b><code class="mono" id="rk">' + esc(reveal.key) + '</code><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="cp">Copy key</button><span class="note">Shown only now. Send it through a password manager or read it over the phone, never in an email body.</span></div></div></div>' : '') +
+    '<div class="panel"><h2>New customer</h2><form class="form" id="nc">' +
+      '<label>Customer name<input name="name" required placeholder="Acme Health pilot"></label>' +
+      '<label>Provider<select name="provider"><option value="anthropic">Anthropic</option><option value="openai">OpenAI</option></select></label>' +
+      '<label>Provider API key<input name="providerKey" type="password" required autocomplete="off" placeholder="Stored encrypted, never shown"></label>' +
+      '<label>ECOS region (grid)<select name="region">' + meta.regions.map(g => '<option value="' + esc(g.code) + '"' + (g.code === meta.defaultRegion ? ' selected' : '') + '>' + esc(g.name) + '</option>').join('') + '</select></label>' +
+      '<label>If the gate fails<select name="failMode"><option value="closed">Refuse the request (closed)</option><option value="open">Forward and record it (open)</option></select></label>' +
+      '<div style="display:flex;align-items:end"><button class="btn primary">Create customer</button></div></form></div>' +
+    '<div class="panel"><h2>All customers</h2><div class="tbl"><table><thead><tr><th>Customer</th><th>Provider</th><th>ECOS region</th><th>If gate fails</th><th>Gateway key</th><th>Reviewer key</th><th>Created</th><th></th></tr></thead><tbody>' +
+      (d.tenants.length ? d.tenants.map(t => '<tr><td><b>' + esc(t.name) + '</b><div class="note mono">' + esc(t.id) + '</div></td><td>' + esc(t.provider) + '</td><td>' + (t.revoked ? esc(t.regionName) : '<select data-region="' + esc(t.id) + '">' + meta.regions.map(g => '<option value="' + esc(g.code) + '"' + (g.code === t.region ? ' selected' : '') + '>' + esc(g.name) + '</option>').join('') + '</select>') + '</td><td>' + (t.failMode === 'closed' ? 'Refuse' : 'Forward') + '</td><td class="mono">' + esc(t.keyPrefix) + '…</td><td class="mono">' + (t.reviewerKeyPrefix ? esc(t.reviewerKeyPrefix) + '…' : '<span class="note">none</span>') + '</td><td>' + when(t.createdAt) + '</td><td style="white-space:nowrap">' +
+        (t.revoked ? '<span class="v NO">Revoked</span>' : '<button class="btn" data-rev-key="' + esc(t.id) + '">' + (t.reviewerKeyPrefix ? 'New reviewer key' : 'Issue reviewer key') + '</button> <button class="btn" data-revoke="' + esc(t.id) + '">Revoke</button>') + '</td></tr>').join('') : '<tr><td colspan="8" class="empty">No customers yet.</td></tr>') +
+    '</tbody></table></div></div>' + footer;
+  if ($('#cp')) $('#cp').onclick = async () => { try { await navigator.clipboard.writeText(reveal.key); toast('Copied.'); } catch(e) { const r = document.createRange(); r.selectNodeContents($('#rk')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selected. Press Cmd+C to copy.'); } };
+  $('#nc').onsubmit = async e => {
+    e.preventDefault(); const f = new FormData(e.target), body = Object.fromEntries(f.entries());
+    try { const r = await api('/tenants', { method: 'POST', body }); customers({ title: 'Gateway key for ' + r.tenant.name, key: r.apiKey }); } catch(err) { toast(err.message); }
+  };
+  document.querySelectorAll('[data-rev-key]').forEach(b => b.onclick = async () => {
+    const t = d.tenants.find(x => x.id === b.dataset.revKey);
+    if (t.reviewerKeyPrefix && b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Replace the old key?'; return; }
+    try { const r = await api('/tenants/' + encodeURIComponent(t.id) + '/reviewer-key', { method: 'POST' }); customers({ title: 'Reviewer key for ' + t.name, key: r.reviewerKey }); } catch(e) { toast(e.message); }
+  });
+  document.querySelectorAll('[data-region]').forEach(sel => sel.onchange = async () => {
+    try { await api('/tenants/' + encodeURIComponent(sel.dataset.region) + '/region', { method: 'PUT', body: { region: sel.value } }); toast('ECOS region saved. New receipts use it; signed receipts keep theirs.'); } catch(e) { toast(e.message); }
+  });
+  document.querySelectorAll('[data-revoke]').forEach(b => b.onclick = async () => {
+    if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Click again to revoke'; b.classList.add('bad'); return; }
+    try { await api('/tenants/' + encodeURIComponent(b.dataset.revoke) + '/revoke', { method: 'POST' }); toast('Revoked. The next request with that key is refused.'); customers(); } catch(e) { toast(e.message); }
+  });
+}
+
+if (S.key) boot().catch(e => { if (e.message !== 'unauthorized') renderSignIn(e.message); }); else renderSignIn();
+})();
+</script>
+</body>
+</html>
